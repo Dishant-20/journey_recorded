@@ -634,6 +634,7 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
                       str_access_code:
                           widget.dict_get_data['accessCode'].toString(),
                       str_guild_name: widget.dict_get_data['name'].toString(),
+                      str_guild_id: widget.dict_get_data['gluidId'].toString(),
                     ),
                   ),
                 );

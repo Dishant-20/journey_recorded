@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/guild/guild.dart';
+import 'package:journey_recorded/guild/guild_after_join/guild_after_join.dart';
 import 'package:journey_recorded/guild/guild_details/guild_details.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -281,7 +282,9 @@ class _GuildListState extends State<GuildList> {
       ),*/
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print('qwkhfcfhgvjb');
+          if (kDebugMode) {
+            print('qwkhfcfhgvjb');
+          }
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -310,20 +313,24 @@ class _GuildListState extends State<GuildList> {
                   return InkWell(
                     onTap: () {
                       //
-                      // print('object');
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => GuildDetailsScreen(
-                      //       dict_get_data: arr_guild_list[index],
-                      //     ),
-                      //   ),
-                      // );
+                      if (arr_guild_list[index]['youJoin'].toString() ==
+                          'Yes') {
+                        print('object 1');
+                        //
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GuildAfterJoinScreen(),
+                          ),
+                        );
+                        //
+                      } else {
+                        push_to_guild_details(
+                          context,
+                          arr_guild_list[index],
+                        );
+                      }
                       //
-                      push_to_guild_details(
-                        context,
-                        arr_guild_list[index],
-                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.only(
@@ -484,7 +491,9 @@ class _GuildListState extends State<GuildList> {
       ),
     );
 
-    print('result =====> ' + result);
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
 
     if (!mounted) return;
 
@@ -492,8 +501,10 @@ class _GuildListState extends State<GuildList> {
       print('object 32');
     }
 
-    str_guild_loader = '0';
-    setState(() {});
+    setState(() {
+      str_guild_loader = '0';
+      str_save_and_continue_loader = '0';
+    });
     get_goals_list_WB('');
   }
 
