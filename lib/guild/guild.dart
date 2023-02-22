@@ -1,11 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,9 +22,15 @@ class GuildScreen extends StatefulWidget {
 
 class _GuildScreenState extends State<GuildScreen> {
   //
+  ImagePicker picker = ImagePicker();
+  XFile? image;
+  File? imageFile;
+  //
   var str_save_and_continue_loader = '0';
   //
   final _formKey = GlobalKey<FormState>();
+  //
+  TextEditingController cont_search = TextEditingController();
   //
   late final TextEditingController cont_name_your_guild;
   late final TextEditingController cont_subject_of_guild;
@@ -84,6 +93,48 @@ class _GuildScreenState extends State<GuildScreen> {
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
+              //
+              Center(
+                child: InkWell(
+                  onTap: () {
+                    //
+                    _showActionSheet_for_camera_gallery(context);
+                    //
+                  },
+                  child: imageFile == null
+                      ? Container(
+                          margin: const EdgeInsets.all(10.0),
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(
+                              0,
+                            ),
+                            border: Border.all(),
+                          ),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.all(10.0),
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(
+                              14.0,
+                            ),
+                            border: Border.all(),
+                          ),
+                          child: Image.file(
+                            fit: BoxFit.cover,
+                            imageFile!,
+                            height: 150.0,
+                            width: 100.0,
+                          ),
+                        ),
+                ),
+              ),
+              //
               Container(
                 margin: const EdgeInsets.all(
                   10.0,
@@ -470,4 +521,81 @@ benefit:
       print('something went wrong');
     }
   }
+
+  //
+  //
+  void _showActionSheet_for_camera_gallery(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Camera option'),
+        // message: const Text(''),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // ignore: deprecated_member_use
+              PickedFile? pickedFile = await ImagePicker().getImage(
+                source: ImageSource.camera,
+                maxWidth: 1800,
+                maxHeight: 1800,
+              );
+              if (pickedFile != null) {
+                setState(() {
+                  imageFile = File(pickedFile.path);
+                });
+              }
+            },
+            child: Text(
+              'Open Camera',
+              style: TextStyle(
+                fontFamily: font_style_name,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // ignore: deprecated_member_use
+              PickedFile? pickedFile = await ImagePicker().getImage(
+                source: ImageSource.gallery,
+                maxWidth: 1800,
+                maxHeight: 1800,
+              );
+              if (pickedFile != null) {
+                setState(() {
+                  print('object');
+                  imageFile = File(pickedFile.path);
+                });
+              }
+            },
+            child: Text(
+              'Open Gallery',
+              style: TextStyle(
+                fontFamily: font_style_name,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Dismiss',
+              style: TextStyle(
+                fontFamily: font_style_name,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  //
 }

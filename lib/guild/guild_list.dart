@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
+import 'package:journey_recorded/guild/guild.dart';
 import 'package:journey_recorded/guild/guild_details/guild_details.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,14 +24,22 @@ class _GuildListState extends State<GuildList> {
   var str_guild_loader = '0';
   var arr_guild_list = [];
   //
+  TextEditingController cont_search = TextEditingController();
+  //
+  var str_save_and_continue_loader = '0';
+  //
   @override
   void initState() {
     super.initState();
-    get_goals_list_WB();
+    //
+    get_goals_list_WB('');
+    //
   }
 
-  get_goals_list_WB() async {
-    print('=====> POST : GOAL LIST');
+  get_goals_list_WB(
+    String str_search,
+  ) async {
+    print('=====> POST : GUILD LIST');
 
     // setState(() {
     //   str_guild_loader = '1';
@@ -48,7 +57,7 @@ class _GuildListState extends State<GuildList> {
         <String, String>{
           'action': 'gulidlist',
           'userId': prefs.getInt('userId').toString(),
-          'searchKey': '',
+          'searchKey': str_search.toString(),
           // 'own': '',
           // 'subGoal': '2'
         },
@@ -69,9 +78,17 @@ class _GuildListState extends State<GuildList> {
           arr_guild_list.add(get_data['data'][i]);
         }
 
-        setState(() {
-          str_guild_loader = '1';
-        });
+        if (arr_guild_list.isEmpty) {
+          setState(() {
+            str_guild_loader = '2';
+            str_save_and_continue_loader = '1';
+          });
+        } else {
+          setState(() {
+            str_guild_loader = '1';
+            str_save_and_continue_loader = '1';
+          });
+        }
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -87,6 +104,163 @@ class _GuildListState extends State<GuildList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: navigation_color,
+        toolbarHeight: 170,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: (str_save_and_continue_loader == '0')
+            ? const CircularProgressIndicator()
+            : Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.transparent,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.chevron_left,
+                          ),
+                        ),
+                        //
+                        Text(
+                          //
+                          // text_nearby_friend,
+                          'Guild',
+                          //
+                          style: TextStyle(
+                            fontFamily: font_style_name,
+                            fontSize: 18,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 58,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(
+                        14.0,
+                      ),
+                    ),
+                    child: TextField(
+                      controller: cont_search,
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: (value) {
+                        if (kDebugMode) {
+                          print("Go button is clicked");
+                        }
+                        //
+                        setState(() {
+                          str_save_and_continue_loader = '0';
+                        });
+                        //
+                        get_goals_list_WB(
+                          cont_search.text.toString(),
+                        );
+                        //
+                        // func_get_all_users_near_you();
+                        //
+                      },
+                      decoration: const InputDecoration(
+                        // labelText: "Search",
+                        hintText: 'Search',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+        /*Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Chats',
+                    style: TextStyle(
+                      fontFamily: font_family_name,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextField(
+                    controller: cont_search,
+                    decoration: InputDecoration(
+                      labelText: "Search",
+                      hintText: "Search",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            25.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),*/
+        /*Text(
+          'User Profile'.toUpperCase(),
+          style: TextStyle(
+            fontFamily: font_family_name,
+          ),
+        ),*/
+        /*leading: IconButton(
+          onPressed: () {
+            if (kDebugMode) {
+              print('');
+            }
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.chevron_left,
+          ),
+        ),*/
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              /*gradient: LinearGradient(
+              colors: [
+                Color.fromRGBO(170, 0, 20, 1),
+                Color.fromRGBO(180, 30, 20, 1),
+                Color.fromRGBO(218, 115, 32, 1),
+                Color.fromRGBO(227, 142, 36, 1),
+                Color.fromRGBO(236, 170, 40, 1),
+                Color.fromRGBO(248, 198, 40, 1),
+                Color.fromRGBO(252, 209, 42, 1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),*/
+              ),
+        ),
+      ),
+      /*appBar: AppBar(
         backgroundColor: navigation_color,
         leading: IconButton(
           icon: const Icon(
@@ -104,19 +278,27 @@ class _GuildListState extends State<GuildList> {
             fontSize: 18.0,
           ),
         ),
-      ),
+      ),*/
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('qwkhfcfhgvjb');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const GuildScreen(),
+            ),
+          );
         },
         backgroundColor: navigation_color,
         child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: (str_guild_loader == '0')
+        child: (str_guild_loader == '2')
             ? const CustomeLoaderPopUp(
-                str_custom_loader: 'please wait...', str_status: '3')
+                str_custom_loader: 'No Data found.',
+                str_status: '4',
+              )
             : ListView.separated(
                 separatorBuilder: (context, index) => const Divider(
                   color: Colors.black,
@@ -127,7 +309,8 @@ class _GuildListState extends State<GuildList> {
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      print('object');
+                      //
+                      // print('object');
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -136,7 +319,7 @@ class _GuildListState extends State<GuildList> {
                       //     ),
                       //   ),
                       // );
-
+                      //
                       push_to_guild_details(
                         context,
                         arr_guild_list[index],
@@ -171,9 +354,8 @@ class _GuildListState extends State<GuildList> {
                               child: Text(
                                 //
                                 // arr_guild_list[index]['name'].toString(),
-                                func_get_initials(arr_guild_list[index]
-                                        ['createrName']
-                                    .toString()),
+                                func_get_initials(
+                                    arr_guild_list[index]['name'].toString()),
                                 //
                                 style: TextStyle(
                                   fontFamily: font_style_name,
@@ -205,7 +387,7 @@ class _GuildListState extends State<GuildList> {
                         // ),
                         title: Text(
                           //
-                          arr_guild_list[index]['createrName'].toString(),
+                          arr_guild_list[index]['name'].toString(),
                           //
                           style: TextStyle(
                             fontFamily: font_style_name,
@@ -312,7 +494,7 @@ class _GuildListState extends State<GuildList> {
 
     str_guild_loader = '0';
     setState(() {});
-    get_goals_list_WB();
+    get_goals_list_WB('');
   }
 
   //
@@ -321,14 +503,14 @@ class _GuildListState extends State<GuildList> {
 
     var final_initial_name = '';
     // print(initials_are.length);
-    if (initials_are.length == 1) {
-      final_initial_name = initials_are[0][0].toString().toUpperCase();
-    } else if (initials_are.length == 2) {
+    // if (initials_are.length == 1) {
+    final_initial_name = initials_are[0][0].toString().toUpperCase();
+    /*}else if (initials_are.length == 2) {
       final_initial_name =
           (initials_are[0][0] + initials_are[1][0]).toString().toUpperCase();
     } else {
       final_initial_name = initials_are[0][0].toString().toUpperCase();
-    }
+    }*/
     return final_initial_name;
   }
 }
