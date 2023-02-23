@@ -26,6 +26,7 @@ class _GuildScreenState extends State<GuildScreen> {
   XFile? image;
   File? imageFile;
   //
+  var str_image_alert;
   var str_save_and_continue_loader = '0';
   //
   final _formKey = GlobalKey<FormState>();
@@ -190,6 +191,7 @@ class _GuildScreenState extends State<GuildScreen> {
                   10.0,
                 ),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   readOnly: false,
                   onTap: () {
                     if (kDebugMode) {
@@ -215,6 +217,7 @@ class _GuildScreenState extends State<GuildScreen> {
                   10.0,
                 ),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   readOnly: false,
                   onTap: () {
                     if (kDebugMode) {
@@ -265,6 +268,7 @@ class _GuildScreenState extends State<GuildScreen> {
                   10.0,
                 ),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   readOnly: false,
                   onTap: () {
                     if (kDebugMode) {
@@ -316,6 +320,7 @@ class _GuildScreenState extends State<GuildScreen> {
                   10.0,
                 ),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   readOnly: false,
                   onTap: () {
                     if (kDebugMode) {
@@ -403,7 +408,14 @@ class _GuildScreenState extends State<GuildScreen> {
                             print('value all fill now');
                           }
                           //
-                          func_create_guild_WB();
+                          if (str_image_alert == '1') {
+                            func_create_guild_WB();
+                          } else {
+                            //
+                            func_select_image_popup();
+                            //
+                          }
+
                           //
                         }
                         //
@@ -452,7 +464,7 @@ class _GuildScreenState extends State<GuildScreen> {
   }
 
   // create guild
-  func_create_guild_WB() async {
+  /*func_create_guild_WB() async {
     print('object');
 
     setState(() {
@@ -520,6 +532,72 @@ benefit:
       // return postList;
       print('something went wrong');
     }
+  }*/
+
+  func_create_guild_WB() async {
+    setState(() {
+      str_save_and_continue_loader = '1';
+    });
+    // var postBody = {
+    //   'action': 'addreward',
+    //   'userId': '42',
+    //   'reward_name': 'test_reward',
+    //   'price': '100',
+    //   'profesionalId': widget.str_professional_type.toString(),
+    //   'profesionalType': 'Goal',
+    //   'image': imageFile!,
+    // };
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var request =
+        http.MultipartRequest('POST', Uri.parse(application_base_url));
+
+    request.fields['action'] = 'gulidadd';
+    request.fields['userId'] = prefs.getInt('userId').toString();
+
+    /*
+     'action': 'gulidadd',
+          'userId': prefs.getInt('userId').toString(),
+          'name': cont_name_your_guild.text.toString(),
+          'subject': cont_subject_of_guild.text.toString(),
+          'accessCode': cont_create_access_code.text.toString(),
+          'maxNumber': cont_max_member.text.toString(),
+          'createrName': cont_creator_name.text.toString(),
+          'miles': cont_miles_radius.text.toString(),
+          'Description': cont_describe.text.toString(),
+          'Donation': cont_donation.text.toString(),
+          'searchKey': cont_write_10.text.toString(),
+          'benefit': cont_how_will_you.text.toString(), */
+    request.fields['name'] = cont_name_your_guild.text.toString();
+    request.fields['subject'] = cont_subject_of_guild.text.toString();
+    request.fields['accessCode'] = cont_create_access_code.text.toString();
+    request.fields['maxNumber'] = cont_max_member.text.toString();
+    request.fields['createrName'] = cont_creator_name.text.toString();
+    request.fields['miles'] = cont_miles_radius.text.toString();
+    request.fields['Description'] = cont_describe.text.toString();
+    request.fields['Donation'] = cont_donation.text.toString();
+    request.fields['searchKey'] = cont_write_10.text.toString();
+    request.fields['benefit'] = cont_how_will_you.text.toString();
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image',
+        imageFile!.path,
+      ),
+    );
+
+    var response = await request.send();
+    var responsed = await http.Response.fromStream(response);
+    final responsedData = json.decode(responsed.body);
+    print(responsedData);
+
+    if (responsedData['status'].toString() == 'Success') {
+      setState(() {
+        Navigator.of(context).pop('');
+        str_save_and_continue_loader = '0';
+      });
+    }
   }
 
   //
@@ -543,6 +621,7 @@ benefit:
               );
               if (pickedFile != null) {
                 setState(() {
+                  str_image_alert = '1';
                   imageFile = File(pickedFile.path);
                 });
               }
@@ -568,6 +647,7 @@ benefit:
               if (pickedFile != null) {
                 setState(() {
                   print('object');
+                  str_image_alert = '1';
                   imageFile = File(pickedFile.path);
                 });
               }
@@ -595,6 +675,52 @@ benefit:
           ),
         ],
       ),
+    );
+  }
+
+  //
+  //
+  func_select_image_popup() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Alert',
+            style: TextStyle(
+              fontFamily: font_style_name,
+              fontSize: 22.0,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  'Please select an Image.',
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'dismiss',
+                style: TextStyle(
+                  fontFamily: font_style_name,
+                  fontSize: 16.0,
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
   //

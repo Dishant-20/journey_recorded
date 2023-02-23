@@ -285,12 +285,8 @@ class _GuildListState extends State<GuildList> {
           if (kDebugMode) {
             print('qwkhfcfhgvjb');
           }
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const GuildScreen(),
-            ),
-          );
+          //
+          push_to_add_guild(context);
         },
         backgroundColor: navigation_color,
         child: const Icon(Icons.add),
@@ -320,14 +316,26 @@ class _GuildListState extends State<GuildList> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const GuildAfterJoinScreen(),
+                            builder: (context) => GuildAfterJoinScreen(
+                              dict_value: arr_guild_list[index],
+                            ),
                           ),
                         );
                         //
                       } else {
-                        push_to_guild_details(
+                        print('object ??');
+                        // push_to_guild_details(
+                        //   context,
+                        //   arr_guild_list[index],
+                        // );
+
+                        Navigator.push(
                           context,
-                          arr_guild_list[index],
+                          MaterialPageRoute(
+                            builder: (context) => GuildAfterJoinScreen(
+                              dict_value: arr_guild_list[index],
+                            ),
+                          ),
                         );
                       }
                       //
@@ -357,41 +365,33 @@ class _GuildListState extends State<GuildList> {
                               color: Colors.amber,
                               borderRadius: BorderRadius.circular(40.0),
                             ),
-                            child: Align(
-                              child: Text(
-                                //
-                                // arr_guild_list[index]['name'].toString(),
-                                func_get_initials(
-                                    arr_guild_list[index]['name'].toString()),
-                                //
-                                style: TextStyle(
-                                  fontFamily: font_style_name,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
+                            child: (arr_guild_list[index]['imge'].toString() !=
+                                    '')
+                                ? CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      arr_guild_list[index]['imge'].toString(),
+                                    ),
+                                    radius: 60,
+                                  )
+                                : Align(
+                                    child: Text(
+                                      //
+                                      func_get_initials(arr_guild_list[index]
+                                              ['name']
+                                          .toString()),
+
+                                      //
+                                      style: TextStyle(
+                                        fontFamily: font_style_name,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
 
-                        /*ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: (arr_goal_list[index]['image'].toString() ==
-                              '')
-                          ? Image.asset('assets/images/logo.png')
-                          : FadeInImage.assetNetwork(
-                              placeholder: 'assets/images/loader.gif',
-                              image:
-                                  arr_goal_list[index]['image'].toString(),
-                            ),
-                    ),*/
-                        // const CircleAvatar(
-                        //   radius: 30,
-                        //   backgroundImage: AssetImage(
-                        //     'assets/images/3.png',
-                        //   ),
-                        // ),
                         title: Text(
                           //
                           arr_guild_list[index]['name'].toString(),
@@ -431,47 +431,6 @@ class _GuildListState extends State<GuildList> {
                             ],
                           ),
                         ),
-                        /*Text(
-                          //
-                          'Total Member : ${arr_guild_list[index]['maxNumber']}',
-                          // 'category name',
-                          //
-                          style: TextStyle(
-                            fontFamily: font_style_name,
-                            fontSize: 14.0,
-                            color: const Color.fromRGBO(
-                              30,
-                              58,
-                              118,
-                              1,
-                            ),
-                          ),
-                        ),*/
-                        /*trailing: Container(
-                          height: 40,
-                          width: 120,
-                          decoration: const BoxDecoration(
-                            color: Colors.deepOrangeAccent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(
-                                25.0,
-                              ),
-                            ),
-                          ),
-                          child: Align(
-                            child: Text(
-                              //
-                              'Miles : ${arr_guild_list[index]['miles']}',
-                              //
-                              style: TextStyle(
-                                fontFamily: font_style_name,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),*/
                       ),
                     ),
                   );
@@ -487,6 +446,7 @@ class _GuildListState extends State<GuildList> {
       MaterialPageRoute(
         builder: (context) => GuildDetailsScreen(
           dict_get_data: dict_value,
+          str_from_list: 'yes',
         ),
       ),
     );
@@ -500,6 +460,27 @@ class _GuildListState extends State<GuildList> {
     if (result.toString() == 'back') {
       print('object 32');
     }
+
+    setState(() {
+      str_guild_loader = '0';
+      str_save_and_continue_loader = '0';
+    });
+    get_goals_list_WB('');
+  }
+
+  Future<void> push_to_add_guild(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const GuildScreen(),
+      ),
+    );
+
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
+
+    if (!mounted) return;
 
     setState(() {
       str_guild_loader = '0';

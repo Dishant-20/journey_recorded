@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:convert';
 
@@ -12,9 +12,11 @@ import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GuildDetailsScreen extends StatefulWidget {
-  const GuildDetailsScreen({super.key, this.dict_get_data});
+  const GuildDetailsScreen(
+      {super.key, this.dict_get_data, required this.str_from_list});
 
   final dict_get_data;
+  final String str_from_list;
   @override
   State<GuildDetailsScreen> createState() => _GuildDetailsScreenState();
 }
@@ -35,6 +37,8 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
   var str_already_joined = '0';
   //
   var str_members_count = '';
+  //
+  var str_quit_loader = '1';
   //
   @override
   void initState() {
@@ -86,6 +90,9 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
   func_get_my_login_id() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     str_login_id = prefs.getInt('userId').toString();
+    print(widget.str_from_list);
+    print(str_login_id);
+    print(widget.dict_get_data['userId'].toString());
 
     if (widget.dict_get_data['youJoin'].toString() == 'Yes') {
       str_already_joined = '1';
@@ -437,7 +444,190 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
             color: Colors.grey,
           ),
         ],
-        (str_login_id.toString() == widget.dict_get_data['userId'].toString())
+        if (widget.str_from_list == 'yes') ...[
+          // user come from guild list
+          (str_login_id.toString() == widget.dict_get_data['userId'].toString())
+              ? const SizedBox(
+                  height: 10,
+                )
+              : Container(
+                  margin: const EdgeInsets.all(
+                    10.0,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      12.0,
+                    ),
+                    color: Colors.green,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(
+                          0,
+                          3,
+                        ), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      'Joined',
+                      style: TextStyle(
+                        fontFamily: font_style_name,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+        ] else ...[
+          // user come here from inside grid details
+          (str_login_id.toString() == widget.dict_get_data['userId'].toString())
+              ? const SizedBox(
+                  height: 0,
+                )
+              : (widget.dict_get_data['youJoin'] == 'No')
+                  ? InkWell(
+                      onTap: () {
+                        if (kDebugMode) {
+                          print('join this guild now');
+                        }
+                        //
+                        func_show_join_guild_alert();
+                        //
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(
+                          10.0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            12.0,
+                          ),
+                          color: const Color.fromRGBO(
+                            250,
+                            42,
+                            18,
+                            1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(
+                                0,
+                                3,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        height: 60,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Text(
+                            'Join Guild now',
+                            style: TextStyle(
+                              fontFamily: font_style_name,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : InkWell(
+                      onTap: () {
+                        if (kDebugMode) {
+                          print('quit this grid');
+                        }
+
+                        func_show_quit_guild_alert();
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(
+                          10.0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            12.0,
+                          ),
+                          color: const Color.fromRGBO(
+                            250,
+                            42,
+                            18,
+                            1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(
+                                0,
+                                3,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        height: 60,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Text(
+                            'Quit',
+                            style: TextStyle(
+                              fontFamily: font_style_name,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+          /*(widget.str_from_list == 'no')
+                  ? (str_quit_loader == '0')
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : (widget.dict_get_data['youJoin'] == 'No')
+                          ? Text(
+                              'Join Guild now',
+                              style: TextStyle(
+                                fontFamily: font_style_name,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              'Quit',
+                              style: TextStyle(
+                                fontFamily: font_style_name,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            )
+                  : Text(
+                      'Join Guild now',
+                      style: TextStyle(
+                        fontFamily: font_style_name,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),*/
+        ]
+
+        /*(str_login_id.toString() == widget.dict_get_data['userId'].toString())
             ? const SizedBox(
                 height: 0,
               )
@@ -485,7 +675,11 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
                     : InkWell(
                         onTap: () {
                           //
-                          func_show_join_guild_alert();
+                          (widget.str_from_list == 'no')
+                              ? (widget.dict_get_data['youJoin'] == 'No')
+                                  ? func_show_join_guild_alert() // join
+                                  : func_show_quit_guild_alert() // quit
+                              : func_show_join_guild_alert(); // join
                           //
                         },
                         child: Container(
@@ -517,18 +711,42 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
                           height: 60,
                           width: MediaQuery.of(context).size.width,
                           child: Center(
-                            child: Text(
-                              'Join Guild now',
-                              style: TextStyle(
-                                fontFamily: font_style_name,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child: (widget.str_from_list == 'no')
+                                ? (str_quit_loader == '0')
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : (widget.dict_get_data['youJoin'] == 'No')
+                                        ? Text(
+                                            'Join Guild now',
+                                            style: TextStyle(
+                                              fontFamily: font_style_name,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                        : Text(
+                                            'Quit',
+                                            style: TextStyle(
+                                              fontFamily: font_style_name,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                : Text(
+                                    'Join Guild now',
+                                    style: TextStyle(
+                                      fontFamily: font_style_name,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
-                      ),
+                      ),*/
       ],
     );
   }
@@ -585,6 +803,69 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
       // return postList;
       print('something went wrong');
     }
+  }
+
+  func_show_quit_guild_alert() {
+    // Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Journey Recorded',
+            style: TextStyle(
+              fontFamily: font_style_name,
+              fontSize: 22.0,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  'Are you sure you want to quit this Guild ?',
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'yes, quit',
+                style: TextStyle(
+                  fontFamily: font_style_name,
+                  fontSize: 16.0,
+                  color: Colors.green,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                //
+
+                func_remove_save_and_continue_WB();
+                //
+              },
+            ),
+            TextButton(
+              child: Text(
+                'dismiss',
+                style: TextStyle(
+                  fontFamily: font_style_name,
+                  fontSize: 16.0,
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+// }
   }
 
   //
@@ -662,7 +943,9 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
   //
 
   func_save_and_continue_WB() async {
-    print('object');
+    if (kDebugMode) {
+      print('object');
+    }
     setState(() {
       str_join_guild_now_status = '0';
     });
@@ -708,6 +991,65 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
       print('something went wrong');
     }
   }
+
+  //
+  func_remove_save_and_continue_WB() async {
+    print('object');
+    setState(() {
+      str_quit_loader = '0';
+      str_join_guild_now_status = '0';
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // print(prefs.getInt('userId').toString());
+    final resposne = await http.post(
+      Uri.parse(
+        application_base_url,
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'action': 'gulidjoin',
+          'userId': prefs.getInt('userId').toString(),
+          'gulidId': widget.dict_get_data['gluidId'].toString(),
+          'join': 'No',
+        },
+      ),
+    );
+
+    // convert data to dict
+    var get_data = jsonDecode(resposne.body);
+    if (kDebugMode) {
+      print(get_data);
+    }
+
+    if (resposne.statusCode == 200) {
+      if (get_data['status'].toString().toLowerCase() == 'success') {
+        // get and parse data
+        // arr_members_list.clear();
+
+        // setState(() {
+        //   str_already_joined = '1';
+        //   str_join_guild_now_status = '1';
+        // });
+        //
+        setState(() {
+          str_quit_loader = '1';
+        });
+        Navigator.of(context).pop('back');
+        //
+      } else {
+        print(
+          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+        );
+      }
+    } else {
+      // return postList;
+      print('something went wrong');
+    }
+  }
+  //
 
   func_get_initials(String str_name) {
     var initials_are = str_name.split(' ');
