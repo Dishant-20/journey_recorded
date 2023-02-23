@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:io';
@@ -14,7 +14,9 @@ import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GuildScreen extends StatefulWidget {
-  const GuildScreen({super.key});
+  const GuildScreen({super.key, this.get_guild_details});
+
+  final get_guild_details;
 
   @override
   State<GuildScreen> createState() => _GuildScreenState();
@@ -51,18 +53,61 @@ class _GuildScreenState extends State<GuildScreen> {
   void initState() {
     super.initState();
     //
-    cont_name_your_guild = TextEditingController();
-    cont_subject_of_guild = TextEditingController();
-    cont_create_access_code = TextEditingController();
-    cont_max_member = TextEditingController();
-    cont_creator_name = TextEditingController();
-    cont_miles_radius = TextEditingController();
-    cont_describe = TextEditingController();
-
-    cont_donation = TextEditingController();
-    cont_how_will_you = TextEditingController();
-    cont_write_10 = TextEditingController();
+    if (kDebugMode) {
+      print(widget.get_guild_details);
+    }
     //
+    if (widget.get_guild_details == null) {
+      //
+      cont_name_your_guild = TextEditingController();
+      cont_subject_of_guild = TextEditingController();
+      cont_create_access_code = TextEditingController();
+      cont_max_member = TextEditingController();
+      cont_creator_name = TextEditingController();
+      cont_miles_radius = TextEditingController();
+      cont_describe = TextEditingController();
+
+      cont_donation = TextEditingController();
+      cont_how_will_you = TextEditingController();
+      cont_write_10 = TextEditingController();
+      //
+    } else {
+      //
+
+      //
+      cont_name_your_guild = TextEditingController(
+        text: widget.get_guild_details['name'].toString(),
+      );
+      cont_subject_of_guild = TextEditingController(
+        text: widget.get_guild_details['subject'].toString(),
+      );
+      cont_create_access_code = TextEditingController(
+        text: widget.get_guild_details['accessCode'].toString(),
+      );
+      cont_max_member = TextEditingController(
+        text: widget.get_guild_details['maxNumber'].toString(),
+      );
+      cont_creator_name = TextEditingController(
+        text: widget.get_guild_details['createrName'].toString(),
+      );
+      cont_miles_radius = TextEditingController(
+        text: widget.get_guild_details['miles'].toString(),
+      );
+      cont_describe = TextEditingController(
+        text: widget.get_guild_details['Description'].toString(),
+      );
+
+      cont_donation = TextEditingController(
+        text: widget.get_guild_details['Donation'].toString(),
+      );
+      cont_how_will_you = TextEditingController(
+        text: widget.get_guild_details['benefit'].toString(),
+      );
+      cont_write_10 = TextEditingController(
+        text: widget.get_guild_details['searchKey'].toString(),
+      );
+      //
+    }
   }
 
   @override
@@ -408,17 +453,33 @@ class _GuildScreenState extends State<GuildScreen> {
                             print('value all fill now');
                           }
                           //
-                          if (str_image_alert == '1') {
-                            func_create_guild_WB();
+
+                          if (widget.get_guild_details == null) {
+                            //
+                            if (str_image_alert == '1') {
+                              func_create_guild_WB();
+                            } else {
+                              //
+                              func_select_image_popup();
+                              //
+                            }
                           } else {
                             //
-                            func_select_image_popup();
+                            if (str_image_alert == null) {
+                              if (kDebugMode) {
+                                print('EDIT=> NOT SELECT IMAGE');
+                              }
+                              //
+                              func_create_guild_without_image_WB();
+                              //
+                            } else {
+                              print('EDIT=> SELECT IMAGE');
+
+                              func_edit_guild_image_WB();
+                            }
                             //
                           }
-
-                          //
                         }
-                        //
                       },
                       child: Container(
                         margin: const EdgeInsets.all(
@@ -444,15 +505,25 @@ class _GuildScreenState extends State<GuildScreen> {
                         height: 60,
                         width: MediaQuery.of(context).size.width,
                         child: Center(
-                          child: Text(
-                            'Save and Continue',
-                            style: TextStyle(
-                              fontFamily: font_style_name,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: widget.get_guild_details == null
+                              ? Text(
+                                  'Save and Continue',
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Update',
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -463,8 +534,9 @@ class _GuildScreenState extends State<GuildScreen> {
     );
   }
 
+// widget.get_guild_details == null
   // create guild
-  /*func_create_guild_WB() async {
+  func_create_guild_without_image_WB() async {
     print('object');
 
     setState(() {
@@ -498,6 +570,7 @@ benefit:
         <String, String>{
           'action': 'gulidadd',
           'userId': prefs.getInt('userId').toString(),
+          'gulidId': widget.get_guild_details['gluidId'].toString(),
           'name': cont_name_your_guild.text.toString(),
           'subject': cont_subject_of_guild.text.toString(),
           'accessCode': cont_create_access_code.text.toString(),
@@ -522,6 +595,11 @@ benefit:
         setState(() {
           str_save_and_continue_loader = '0';
         });
+
+        Navigator.of(context)
+          ..pop()
+          ..pop('back');
+
         //
       } else {
         print(
@@ -532,21 +610,12 @@ benefit:
       // return postList;
       print('something went wrong');
     }
-  }*/
+  }
 
-  func_create_guild_WB() async {
+  func_edit_guild_image_WB() async {
     setState(() {
       str_save_and_continue_loader = '1';
     });
-    // var postBody = {
-    //   'action': 'addreward',
-    //   'userId': '42',
-    //   'reward_name': 'test_reward',
-    //   'price': '100',
-    //   'profesionalId': widget.str_professional_type.toString(),
-    //   'profesionalType': 'Goal',
-    //   'image': imageFile!,
-    // };
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -556,19 +625,55 @@ benefit:
     request.fields['action'] = 'gulidadd';
     request.fields['userId'] = prefs.getInt('userId').toString();
 
-    /*
-     'action': 'gulidadd',
-          'userId': prefs.getInt('userId').toString(),
-          'name': cont_name_your_guild.text.toString(),
-          'subject': cont_subject_of_guild.text.toString(),
-          'accessCode': cont_create_access_code.text.toString(),
-          'maxNumber': cont_max_member.text.toString(),
-          'createrName': cont_creator_name.text.toString(),
-          'miles': cont_miles_radius.text.toString(),
-          'Description': cont_describe.text.toString(),
-          'Donation': cont_donation.text.toString(),
-          'searchKey': cont_write_10.text.toString(),
-          'benefit': cont_how_will_you.text.toString(), */
+    request.fields['gulidId'] = widget.get_guild_details['gluidId'].toString();
+
+    request.fields['name'] = cont_name_your_guild.text.toString();
+    request.fields['subject'] = cont_subject_of_guild.text.toString();
+    request.fields['accessCode'] = cont_create_access_code.text.toString();
+    request.fields['maxNumber'] = cont_max_member.text.toString();
+    request.fields['createrName'] = cont_creator_name.text.toString();
+    request.fields['miles'] = cont_miles_radius.text.toString();
+    request.fields['Description'] = cont_describe.text.toString();
+    request.fields['Donation'] = cont_donation.text.toString();
+    request.fields['searchKey'] = cont_write_10.text.toString();
+    request.fields['benefit'] = cont_how_will_you.text.toString();
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image',
+        imageFile!.path,
+      ),
+    );
+
+    var response = await request.send();
+    var responsed = await http.Response.fromStream(response);
+    final responsedData = json.decode(responsed.body);
+    print(responsedData);
+
+    if (responsedData['status'].toString() == 'Success') {
+      setState(() {
+        str_save_and_continue_loader = '0';
+      });
+
+      Navigator.of(context)
+        ..pop()
+        ..pop('back');
+    }
+  }
+
+  func_create_guild_WB() async {
+    setState(() {
+      str_save_and_continue_loader = '1';
+    });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var request =
+        http.MultipartRequest('POST', Uri.parse(application_base_url));
+
+    request.fields['action'] = 'gulidadd';
+    request.fields['userId'] = prefs.getInt('userId').toString();
+
     request.fields['name'] = cont_name_your_guild.text.toString();
     request.fields['subject'] = cont_subject_of_guild.text.toString();
     request.fields['accessCode'] = cont_create_access_code.text.toString();

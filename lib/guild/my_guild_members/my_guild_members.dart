@@ -360,7 +360,7 @@ class _MyGuildMembersScreenState extends State<MyGuildMembersScreen> {
     removing_loader = '1';
     loader_show('');
     //
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     // print(prefs.getInt('userId').toString());
     final resposne = await http.post(
       Uri.parse(
@@ -381,7 +381,9 @@ class _MyGuildMembersScreenState extends State<MyGuildMembersScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {

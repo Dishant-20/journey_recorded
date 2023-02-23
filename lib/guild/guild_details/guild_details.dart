@@ -17,6 +17,7 @@ class GuildDetailsScreen extends StatefulWidget {
 
   final dict_get_data;
   final String str_from_list;
+
   @override
   State<GuildDetailsScreen> createState() => _GuildDetailsScreenState();
 }
@@ -450,41 +451,89 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
               ? const SizedBox(
                   height: 10,
                 )
-              : Container(
-                  margin: const EdgeInsets.all(
-                    10.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      12.0,
-                    ),
-                    color: Colors.green,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(
-                          0,
-                          3,
-                        ), // changes position of shadow
+              : (widget.dict_get_data['youJoin'] == 'Yes')
+                  ? Container(
+                      margin: const EdgeInsets.all(
+                        10.0,
                       ),
-                    ],
-                  ),
-                  height: 60,
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Text(
-                      'Joined',
-                      style: TextStyle(
-                        fontFamily: font_style_name,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ),
+                        color: Colors.green,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(
+                              0,
+                              3,
+                            ), // changes position of shadow
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                )
+                      height: 60,
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Text(
+                          'Joined',
+                          style: TextStyle(
+                            fontFamily: font_style_name,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  : InkWell(
+                      onTap: () {
+                        if (kDebugMode) {
+                          print('join this guild now');
+                        }
+                        //
+                        func_show_join_guild_alert();
+                        //
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(
+                          10.0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            12.0,
+                          ),
+                          color: Colors.green,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(
+                                0,
+                                3,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        height: 60,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: (str_quit_loader == '0')
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  'Join Guild now',
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    )
         ] else ...[
           // user come here from inside grid details
           (str_login_id.toString() == widget.dict_get_data['userId'].toString())
@@ -579,15 +628,19 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
                         height: 60,
                         width: MediaQuery.of(context).size.width,
                         child: Center(
-                          child: Text(
-                            'Quit',
-                            style: TextStyle(
-                              fontFamily: font_style_name,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: (str_quit_loader == '0')
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  'Quit',
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -1026,18 +1079,13 @@ class _GuildDetailsScreenState extends State<GuildDetailsScreen> {
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
-        // get and parse data
-        // arr_members_list.clear();
-
-        // setState(() {
-        //   str_already_joined = '1';
-        //   str_join_guild_now_status = '1';
-        // });
         //
         setState(() {
           str_quit_loader = '1';
         });
-        Navigator.of(context).pop('back');
+        Navigator.of(context)
+          ..pop()
+          ..pop('back');
         //
       } else {
         print(

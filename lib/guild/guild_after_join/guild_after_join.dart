@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
+import 'package:journey_recorded/guild/guild.dart';
 import 'package:journey_recorded/guild/guild_details/guild_details.dart';
 import 'package:journey_recorded/guild/my_guild_members/my_guild_members.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
@@ -22,6 +23,7 @@ class GuildAfterJoinScreen extends StatefulWidget {
 
 class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
   //
+  var str_login_id = '';
   var arr_new_guild = [];
   //
   var str_save_and_continue_loader = '0';
@@ -42,6 +44,8 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
     // print('dishant rajput');
     // print(widget.dict_value[0]);
     // print(widget.dict_value[0]['name'].toString());
+    //
+    func_fetch();
     //
     arr_new_guild = [
       {
@@ -87,6 +91,12 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
     //
   }
 
+  func_fetch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    str_login_id = prefs.getInt('userId').toString();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,6 +120,25 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
             fontSize: 18.0,
           ),
         ),
+        actions: [
+          str_login_id.toString() == widget.dict_value['userId'].toString()
+              ? IconButton(
+                  onPressed: () {
+                    if (kDebugMode) {
+                      print('object');
+                    }
+                    //
+                    push_to_edit_guild(context);
+                    //
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                )
+              : const SizedBox(
+                  height: 0,
+                ),
+        ],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -120,7 +149,7 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
                 // margin: const EdgeInsets.all(10.0),
                 // color: Colors.amber[600],
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       Color.fromRGBO(
@@ -842,5 +871,28 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
     //
     get_goals_list_WB('');
   }
+
   //
+  Future<void> push_to_edit_guild(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GuildScreen(
+          get_guild_details: widget.dict_value,
+        ),
+      ),
+    );
+
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      str_guild_loader = '0';
+      str_save_and_continue_loader = '0';
+    });
+    // get_goals_list_WB('');
+  }
 }
