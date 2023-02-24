@@ -17,7 +17,11 @@ import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateSkills extends StatefulWidget {
-  const CreateSkills({super.key});
+  const CreateSkills(
+      {super.key, required this.str_from_profile, required this.dict_data});
+
+  final String str_from_profile;
+  final dict_data;
 
   @override
   State<CreateSkills> createState() => _CreateSkillsState();
@@ -26,6 +30,7 @@ class CreateSkills extends StatefulWidget {
 class _CreateSkillsState extends State<CreateSkills>
     with SingleTickerProviderStateMixin {
   //
+  var str_skill_id = '';
   var str_image_select = '0';
   var str_save_and_continue_loader = '0';
   var str_category_loader = '0';
@@ -33,6 +38,7 @@ class _CreateSkillsState extends State<CreateSkills>
   var str_category_id = 'n.a.';
   //
 
+  //
   File? imageFile;
   //
   late final TextEditingController cont_skill_name;
@@ -47,13 +53,58 @@ class _CreateSkillsState extends State<CreateSkills>
   void initState() {
     super.initState();
     //
-    cont_skill_name = TextEditingController();
-    cont_skill_category = TextEditingController();
-    cont_skill_select_class = TextEditingController();
-    cont_skill_select_rank = TextEditingController();
-    cont_skill_stats_skill = TextEditingController();
-    cont_skill_how_to_learn = TextEditingController();
-    cont_skill_description = TextEditingController();
+    if (kDebugMode) {
+      print(widget.dict_data);
+    }
+
+    if (widget.str_from_profile == 'yes') {
+      cont_skill_name = TextEditingController(
+        text: widget.dict_data['SkillName'].toString(),
+      );
+      cont_skill_category = TextEditingController(
+        text: widget.dict_data['categoryName'].toString(),
+      );
+      cont_skill_select_class = TextEditingController(
+        text: widget.dict_data['SkillClass'].toString(),
+      );
+      cont_skill_select_rank = TextEditingController(
+        text: widget.dict_data['SkillRank'].toString(),
+      );
+      cont_skill_stats_skill = TextEditingController(
+        text: widget.dict_data['StatsSkill'].toString(),
+      );
+      cont_skill_how_to_learn = TextEditingController(
+        text: widget.dict_data['HourToLearn'].toString(),
+      );
+      cont_skill_description = TextEditingController(
+        text: widget.dict_data['description'].toString(),
+      );
+      //
+      str_category_id = widget.dict_data['categoryId'].toString();
+      str_skill_id = widget.dict_data['skillId'].toString();
+      //
+
+      // setState(() {
+      imageFile = File(widget.dict_data['image']);
+      if (kDebugMode) {
+        print(imageFile!.runtimeType);
+        print(imageFile!.path);
+      }
+      // });
+
+      //
+    } else {
+      //
+      cont_skill_name = TextEditingController();
+      cont_skill_category = TextEditingController();
+      cont_skill_select_class = TextEditingController();
+      cont_skill_select_rank = TextEditingController();
+      cont_skill_stats_skill = TextEditingController();
+      cont_skill_how_to_learn = TextEditingController();
+      cont_skill_description = TextEditingController();
+      //
+    }
+
     //
     get_category_list_WB();
   }
@@ -69,11 +120,14 @@ class _CreateSkillsState extends State<CreateSkills>
     cont_skill_how_to_learn.dispose();
     cont_skill_description.dispose();
     //
+    super.dispose();
   }
 
-//
+  //
   get_category_list_WB() async {
-    print('=====> POST : GET CATEGORY');
+    if (kDebugMode) {
+      print('=====> POST : GET CATEGORY');
+    }
 
     final resposne = await http.post(
       Uri.parse(
@@ -98,8 +152,9 @@ class _CreateSkillsState extends State<CreateSkills>
         //
         arr_get_category_list = get_data['data'];
 
-        str_category_loader = '1';
-        setState(() {});
+        setState(() {
+          str_category_loader = '1';
+        });
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -168,7 +223,9 @@ class _CreateSkillsState extends State<CreateSkills>
                         ),
                       ),
                       onTap: () {
-                        print('click category');
+                        if (kDebugMode) {
+                          print('click category');
+                        }
                         category_list_POPUP('str_message');
                       },
                     ),
@@ -818,7 +875,9 @@ class _CreateSkillsState extends State<CreateSkills>
 
   // add skill
   add_skill_WB() async {
-    print('=====> POST : CREATE SKILL');
+    if (kDebugMode) {
+      print('=====> POST : CREATE SKILL');
+    }
 
     if (str_image_select == '0') {
       upload_profile_alert('Please select an Image');
@@ -882,11 +941,17 @@ class _CreateSkillsState extends State<CreateSkills>
 
     request.fields['action'] = 'skilladd';
     request.fields['userId'] = prefs.getInt('userId').toString();
+
+    //
+    if (widget.str_from_profile == 'yes') {
+      request.fields['skillId'] = str_skill_id.toString();
+    }
+
     request.fields['SkillName'] = cont_skill_name.text.toString();
     request.fields['categoryId'] = str_category_id.toString();
     request.fields['SkillClass'] = cont_skill_select_class.text.toString();
     request.fields['SkillRank'] = cont_skill_select_rank.text.toString();
-    // request.fields['HourToLearn'] = cont_skill_how_to_learn.text.toString();
+    request.fields['StatsSkill'] = cont_skill_stats_skill.text.toString();
     request.fields['description'] = cont_skill_description.text.toString();
 
     if (kDebugMode) {
@@ -897,16 +962,21 @@ class _CreateSkillsState extends State<CreateSkills>
     var response = await request.send();
     var responsed = await http.Response.fromStream(response);
     final responsedData = json.decode(responsed.body);
-    print(responsedData);
+    if (kDebugMode) {
+      print(responsedData);
+    }
 
     if (responsedData['status'].toString().toLowerCase() == 'success') {
       imageFile = null;
 
-      print('success');
+      if (kDebugMode) {
+        print('success');
+      }
       Navigator.pop(context, '');
     } else {
-      str_save_and_continue_loader = '0';
-      setState(() {});
+      setState(() {
+        str_save_and_continue_loader = '0';
+      });
     }
 
     //

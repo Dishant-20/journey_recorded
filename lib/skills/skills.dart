@@ -38,7 +38,8 @@ class _SkillsScreenState extends State<SkillsScreen> {
   var str_all_click = '1';
   var str_by_level_click = '0';
   //
-
+  var str_hide_loader = '0';
+  //
   @override
   void initState() {
     super.initState();
@@ -133,6 +134,11 @@ class _SkillsScreenState extends State<SkillsScreen> {
         }
 
         //
+
+        if (str_hide_loader == '1') {
+          str_hide_loader = '0';
+          Navigator.of(context).pop('');
+        }
 
         setState(() {
           str_main_loader = '1';
@@ -530,7 +536,11 @@ class _SkillsScreenState extends State<SkillsScreen> {
                                   print('');
                                 }
                                 //
-                                show_action_sheet_(context);
+                                show_action_sheet_(
+                                  context,
+                                  arr_skills[i]['skillId'].toString(),
+                                  arr_skills[i],
+                                );
                                 //
                               },
                               icon: const Icon(
@@ -692,7 +702,38 @@ class _SkillsScreenState extends State<SkillsScreen> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const CreateSkills(),
+        builder: (context) => const CreateSkills(
+          str_from_profile: 'no',
+          dict_data: '',
+        ),
+      ),
+    );
+
+    print('result =====> ' + result);
+
+    if (!mounted) return;
+
+    str_main_loader = '0';
+    setState(() {
+      get_skills_list_WB('');
+    });
+  }
+
+  //
+  Future<void> push_to_edit_skill(
+    BuildContext context,
+    get_full_data,
+  ) async {
+    if (kDebugMode) {
+      print('object');
+    }
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateSkills(
+          str_from_profile: 'yes',
+          dict_data: get_full_data,
+        ),
       ),
     );
 
@@ -787,7 +828,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
   }
 
   //
-  void show_action_sheet_(BuildContext context) {
+  void show_action_sheet_(BuildContext context, indexx, full_data) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -799,7 +840,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
             onPressed: () {
               Navigator.pop(context);
               //
-              func_show_delete_skill_alert('');
+              func_show_delete_skill_alert(indexx);
               //
             },
             child: Text(
@@ -814,6 +855,12 @@ class _SkillsScreenState extends State<SkillsScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
+              //
+              push_to_edit_skill(
+                context,
+                full_data,
+              );
+              //
             },
             child: Text(
               'Edit',
@@ -842,7 +889,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
   }
 
   //
-  func_show_delete_skill_alert(get_guild_id) {
+  func_show_delete_skill_alert(get_skill_id) {
     // Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -880,7 +927,8 @@ class _SkillsScreenState extends State<SkillsScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 //
-                loader_show('');
+                delete_skill_WB(get_skill_id);
+                // loader_show('');
                 //
               },
             ),
@@ -932,5 +980,60 @@ class _SkillsScreenState extends State<SkillsScreen> {
     );
 // }
   }
+
   //
+  delete_skill_WB(str_category_id) async {
+    //
+    loader_show('');
+    //
+    if (kDebugMode) {
+      print('=====> POST : SKILLS DELETE');
+    }
+    str_hide_loader = '1';
+    // setState(() {
+    //   // str_main_loader = '0';
+    // });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // print(prefs.getInt('userId').toString());
+    final resposne = await http.post(
+      Uri.parse(
+        application_base_url,
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'action': 'skilldelete',
+          'userId': prefs.getInt('userId').toString(),
+          'skillId': str_category_id.toString(),
+        },
+      ),
+    );
+
+    // convert data to dict
+    var get_data = jsonDecode(resposne.body);
+    if (kDebugMode) {
+      print(get_data);
+    }
+
+    if (resposne.statusCode == 200) {
+      if (get_data['status'].toString().toLowerCase() == 'success') {
+        //
+
+        get_skills_list_WB('');
+        //
+      } else {
+        print(
+          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+        );
+      }
+    } else {
+      // return postList;
+      if (kDebugMode) {
+        print('something went wrong');
+      }
+    }
+  }
 }
