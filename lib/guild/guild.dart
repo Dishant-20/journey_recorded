@@ -648,7 +648,9 @@ benefit:
     var response = await request.send();
     var responsed = await http.Response.fromStream(response);
     final responsedData = json.decode(responsed.body);
-    print(responsedData);
+    if (kDebugMode) {
+      print(responsedData);
+    }
 
     if (responsedData['status'].toString() == 'Success') {
       setState(() {

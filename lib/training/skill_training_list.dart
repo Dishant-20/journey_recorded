@@ -36,7 +36,9 @@ class _SkillTrainingListScreenState extends State<SkillTrainingListScreen> {
 
   // get cart
   get_goals_list_WB() async {
-    print('=====> POST : SKILL => TRAINING LIST');
+    if (kDebugMode) {
+      print('=====> POST : SKILL => TRAINING LIST');
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // print(prefs.getInt('userId').toString());
@@ -59,7 +61,9 @@ class _SkillTrainingListScreenState extends State<SkillTrainingListScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
@@ -120,7 +124,9 @@ class _SkillTrainingListScreenState extends State<SkillTrainingListScreen> {
           else if (str_main_loader == '2')
             InkWell(
               onTap: () {
-                print('object');
+                if (kDebugMode) {
+                  print('object');
+                }
 
                 push_add_training(context);
               },

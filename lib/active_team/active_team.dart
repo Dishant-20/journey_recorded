@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/check_request/check_request.dart';
@@ -72,7 +73,9 @@ class _ActiveTeamScreenState extends State<ActiveTeamScreen> {
                   for (var i = 0; i < 2; i++) ...[
                     InkWell(
                       onTap: () {
-                        print('object');
+                        if (kDebugMode) {
+                          print('object');
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -222,7 +223,7 @@ class _CreateSkillsState extends State<CreateSkills>
                       ),
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: const EdgeInsets.all(
                       10.0,
                     ),
@@ -262,7 +263,7 @@ class _CreateSkillsState extends State<CreateSkills>
                         }
                       },*/
                     ),
-                  ),
+                  ),*/
                   Container(
                     margin: const EdgeInsets.all(
                       10.0,
@@ -885,10 +886,12 @@ class _CreateSkillsState extends State<CreateSkills>
     request.fields['categoryId'] = str_category_id.toString();
     request.fields['SkillClass'] = cont_skill_select_class.text.toString();
     request.fields['SkillRank'] = cont_skill_select_rank.text.toString();
-    request.fields['HourToLearn'] = cont_skill_how_to_learn.text.toString();
+    // request.fields['HourToLearn'] = cont_skill_how_to_learn.text.toString();
     request.fields['description'] = cont_skill_description.text.toString();
 
-    print('check');
+    if (kDebugMode) {
+      print('check');
+    }
     request.files
         .add(await http.MultipartFile.fromPath('image', imageFile!.path));
     var response = await request.send();
