@@ -448,7 +448,32 @@ class _SkillsScreenState extends State<SkillsScreen> {
                     child: InkWell(
                       onTap: () {
                         //
-                        print(arr_skills[i]);
+                        // print('object ?');
+                        // print(arr_skills[i]);
+                        // as
+                        if (arr_skills[i]['TrainingCount'].toString() == '0') {
+                          //
+                          push_add_training(
+                              context, arr_skills[i]['skillId'].toString());
+                          //
+                        } else {
+                          //
+                          if (kDebugMode) {
+                            print(arr_skills[i]);
+                          }
+//
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TrainingListScreen(
+                                str_skill_id:
+                                    arr_skills[i]['skillId'].toString(),
+                                str_training_id:
+                                    arr_skills[i]['trainingId'].toString(),
+                              ),
+                            ),
+                          );
+                        }
                         //
                         // Navigator.push(
                         //   context,
@@ -1036,4 +1061,35 @@ class _SkillsScreenState extends State<SkillsScreen> {
       }
     }
   }
+
+  //
+  Future<void> push_add_training(
+    BuildContext context,
+    get_skill_id,
+  ) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateTrainingScreen(
+          str_skill_id: get_skill_id.toString(),
+        ),
+      ),
+    );
+
+    // print('result =====> ' + result);
+
+    if (!mounted) return;
+
+    if ('$result' == 'training_added') {
+      setState(() {
+        str_main_loader = '0';
+      });
+      //
+      get_skills_list_WB('');
+      //
+    }
+  }
 }
+
+//
+

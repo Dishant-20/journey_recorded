@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
+import 'package:journey_recorded/custom_files/popup/popup.dart';
 import 'package:journey_recorded/goals/add_notes_in_goal/add_notes_in_goal.dart';
 import 'package:journey_recorded/goals/edit_notes_in_goal/edit_notes_in_goal.dart';
 import 'package:journey_recorded/quotes/add_quotes/add_quotes.dart';
@@ -23,35 +24,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TrainingListScreen extends StatefulWidget {
   const TrainingListScreen({
     super.key,
-    required this.str_category,
-    required this.str_skill_class,
-    required this.str_next_level_xp,
-    required this.str_skill_name,
-    required this.str_training_name,
-    required this.str_frequncy,
-    required this.str_stats,
-    required this.str_hr_to_learn,
-    required this.str_description,
-    required this.str_image,
     required this.str_skill_id,
-    required this.str_date_time,
     required this.str_training_id,
   });
 
-  final String str_date_time;
   final String str_skill_id;
   final String str_training_id;
-  final String str_category;
-  final String str_skill_class;
-  final String str_next_level_xp;
-  final String str_skill_name;
-  final String str_training_name;
-  final String str_frequncy;
-  final String str_stats;
-  final String str_hr_to_learn;
-
-  final String str_description;
-  final String str_image;
 
   @override
   State<TrainingListScreen> createState() => _TrainingListScreenState();
@@ -89,16 +67,84 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
   //
   var get_str_date = '';
   var get_str_time = '';
+  //
+  var dict_save_training_full_data;
+  //
   @override
   void initState() {
     super.initState();
     // var string = widget.str_date;
-    final splitted = widget.str_date_time.split(' ');
+    final splitted = '2023-12-12'; //widget.str_date_time.split(' ');
     print(splitted);
     get_str_date = splitted[0].toString();
     get_str_time = splitted[1].toString();
 
     // [Hello, world!];
+    get_goals_list_WB();
+  }
+
+  get_goals_list_WB() async {
+    if (kDebugMode) {
+      print('=====> POST : SKILL => TRAINING LIST');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // print(prefs.getInt('userId').toString());
+    final resposne = await http.post(
+      Uri.parse(
+        application_base_url,
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'action': 'traininglist',
+          'userId': prefs.getInt('userId').toString(),
+          'pageNo': '',
+          'skillId': widget.str_skill_id.toString()
+        },
+      ),
+    );
+
+    // convert data to dict
+    var get_data = jsonDecode(resposne.body);
+    if (kDebugMode) {
+      // print(get_data);
+    }
+
+    if (resposne.statusCode == 200) {
+      if (get_data['status'].toString().toLowerCase() == 'success') {
+        //
+        dict_save_training_full_data = get_data['data'][0];
+        //
+        // get and parse data
+        /*arr_training_list.clear();
+        for (var i = 0; i < get_data['data'].length; i++) {
+          // print(get_data['data'][i]);
+          arr_training_list.add(get_data['data'][i]);
+        }
+
+        if (arr_training_list.isEmpty) {
+          str_main_loader = '2';
+        } else {
+          str_main_loader = '3';
+        }*/
+        if (kDebugMode) {
+          print(dict_save_training_full_data);
+        }
+        setState(() {
+          str_main_loader = '1';
+        });
+      } else {
+        print(
+          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+        );
+      }
+    } else {
+      // return postList;
+      print('something went wrong');
+    }
   }
 
   @override
@@ -189,13 +235,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                   func_quotes_WB();
                 } else if (value == 3) {
                   // quotes
-
                 } else if (value == 4) {
                   // quotes
-
                 } else if (value == 5) {
                   // link
-
                 }
               },
             ),
@@ -207,85 +250,89 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
             backgroundColor: navigation_color,
             child: const Icon(Icons.add),
           ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              // tab 1
-              if (str_UI_show == 'routine') ...[
-                //
-                routine_UI()
-                //
-              ] else if (str_UI_show == 'check_list') ...[
-                //
-                check_list_UI(),
-                //
-              ] else if (str_UI_show == 'stats') ...[
-                //
-                stats_UI(),
-                //
-              ] else if (str_UI_show == 'frequency') ...[
-                //
-                frequency_UI(),
-                //
-              ] else ...[
-                //
-                tab_1_info_UI(context),
-                //
-              ],
+          body: (str_main_loader == '0')
+              ? const DialogExample(
+                  str_alert_text_name: 'please wait...',
+                )
+              : TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: <Widget>[
+                    // tab 1
+                    if (str_UI_show == 'routine') ...[
+                      //
+                      routine_UI()
+                      //
+                    ] else if (str_UI_show == 'check_list') ...[
+                      //
+                      check_list_UI(),
+                      //
+                    ] else if (str_UI_show == 'stats') ...[
+                      //
+                      stats_UI(),
+                      //
+                    ] else if (str_UI_show == 'frequency') ...[
+                      //
+                      frequency_UI(),
+                      //
+                    ] else ...[
+                      //
+                      tab_1_info_UI(context),
+                      //
+                    ],
 
-              // tab 2
-              if (str_UI_show == 'routine') ...[
-                //
-                routine_UI()
-                //
-              ] else if (str_UI_show == 'check_list') ...[
-                //
-                check_list_UI(),
-                //
-              ] else if (str_UI_show == 'stats') ...[
-                //
-                stats_UI(),
-                //
-              ] else if (str_UI_show == 'frequency') ...[
-                //
-                frequency_UI(),
-                //
-              ] else ...[
-                //
-                notes_UI(context)
-                //
-              ],
+                    // tab 2
+                    if (str_UI_show == 'routine') ...[
+                      //
+                      routine_UI()
+                      //
+                    ] else if (str_UI_show == 'check_list') ...[
+                      //
+                      check_list_UI(),
+                      //
+                    ] else if (str_UI_show == 'stats') ...[
+                      //
+                      stats_UI(),
+                      //
+                    ] else if (str_UI_show == 'frequency') ...[
+                      //
+                      frequency_UI(),
+                      //
+                    ] else ...[
+                      //
+                      notes_UI(context)
+                      //
+                    ],
 
-              // tab 3
-              if (str_UI_show == 'routine') ...[
-                //
-                routine_UI()
-                //
-              ] else if (str_UI_show == 'check_list') ...[
-                //
-                check_list_UI(),
-                //
-              ] else if (str_UI_show == 'stats') ...[
-                //
-                stats_UI(),
-                //
-              ] else if (str_UI_show == 'frequency') ...[
-                //
-                frequency_UI(),
-                //
-              ] else ...[
-                //
-                quote_UI(context),
-                /*TrainingQuotesScreen(
+                    // tab 3
+                    if (str_UI_show == 'routine') ...[
+                      //
+                      routine_UI()
+                      //
+                    ] else if (str_UI_show == 'check_list') ...[
+                      //
+                      check_list_UI(),
+                      //
+                    ] else if (str_UI_show == 'stats') ...[
+                      //
+                      stats_UI(),
+                      //
+                    ] else if (str_UI_show == 'frequency') ...[
+                      //
+                      frequency_UI(),
+                      //
+                    ] else ...[
+                      //
+                      quote_UI(context),
+                      /*TrainingQuotesScreen(
                   str_training_quote_skill_class:
                       widget.str_skill_class.toString(),
                   str_training_quote_next_level:
                       widget.str_next_level_xp.toString(),
                 ),*/
-                //
-              ],
-            ],
-          ),
+                      //
+                    ],
+                  ],
+                ),
         ),
       ),
     );
@@ -300,9 +347,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
           // header
           // header_UI(context),
           TrainingHeaderScreen(
-            str_skill_class: widget.str_skill_class.toString(),
-            str_next_level_xp: widget.str_next_level_xp.toString(),
-          ),
+              str_skill_class: '1', //widget.str_skill_class.toString(),
+              str_next_level_xp: '2' //widget.str_next_level_xp.toString(),
+              ),
           //
           if (str_main_loader == 'quotes_loader_start')
             const CustomeLoaderPopUp(
@@ -822,8 +869,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  widget.str_stats.toString(),
-                ),
+                    // widget.str_stats.toString(),
+                    '3'),
                 const SizedBox(
                   width: 10,
                 ),
@@ -872,8 +919,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  widget.str_frequncy.toString(),
-                ),
+                    // widget.str_frequncy.toString(),
+                    '4'),
                 const SizedBox(
                   width: 10,
                 ),
@@ -1038,7 +1085,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        widget.str_category.toString(),
+                        //
+                        dict_save_training_full_data['categoryName'].toString(),
+                        // '5',
                       ),
                       const SizedBox(
                         width: 10,
@@ -1110,7 +1159,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       const Spacer(),
                       Text(
                         //
-                        widget.str_skill_name.toString().toUpperCase(),
+                        dict_save_training_full_data['skillName']
+                            .toString()
+                            .toUpperCase(),
+                        // '6'
                         //
                       ),
                       const SizedBox(
@@ -1145,7 +1197,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        widget.str_training_name.toString(),
+                        dict_save_training_full_data['TrainingName']
+                            .toString()
+                            .toUpperCase(),
+                        // '77',
                       ),
                       const SizedBox(
                         width: 10,
@@ -1176,7 +1231,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        widget.str_frequncy.toString(),
+                        dict_save_training_full_data['Frequency']
+                            .toString()
+                            .toUpperCase(),
+                        // '8',
                       ),
                       const SizedBox(
                         width: 10,
@@ -1210,7 +1268,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        widget.str_stats.toString(),
+                        dict_save_training_full_data['TStats']
+                            .toString()
+                            .toUpperCase(),
+                        // '9',
                       ),
                       const SizedBox(
                         width: 10,
@@ -1330,7 +1391,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
               Container(
                 height: 200 - 30,
                 width: 2,
-                color: Colors.amber,
+                color: Colors.transparent,
               ),
               const SizedBox(
                 width: 10,
@@ -1341,23 +1402,27 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                     right: 10.0,
                   ),
                   height: 200 - 30,
-                  color: Colors.amber,
+                  color: Colors.transparent,
                   child: Column(
                     children: <Widget>[
                       Expanded(
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          color: Colors.pink,
+                          color: Colors.transparent,
                           child: Align(
-                            alignment: Alignment.bottomCenter,
+                            alignment: Alignment.centerLeft,
                             child: Text(
                               //
-                              widget.str_category.toString(),
+                              dict_save_training_full_data['categoryName']
+                                  .toString()
+                                  .toUpperCase(),
+                              // '12',
                               //
                               style: TextStyle(
                                 fontFamily: font_style_name,
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -1366,16 +1431,42 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       Expanded(
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          color: Colors.brown,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              '123',
-                              style: TextStyle(
-                                fontFamily: font_style_name,
-                                fontSize: 24.0,
+                          color: Colors.transparent,
+                          child: Stack(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  'assets/images/btn_round.png',
+                                  height: 140,
+                                  width: MediaQuery.of(context).size.width,
+                                  fit: BoxFit.cover,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                      8,
+                                    ),
+                                  ),
+                                  // border: Border.all(),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                child: Center(
+                                  child: Text(
+                                    //
+                                    'Level : ${dict_save_training_full_data['currentLavel']}',
+                                    //
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: font_style_name,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                // top: 45,
+                                // left: 20,
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -1400,7 +1491,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
               Expanded(
                 child: Align(
                   child: Text(
-                    'Skill Class : ${widget.str_skill_class}',
+                    'Skill Class : ${dict_save_training_full_data['skillClassName'].toString()}',
+                    // dict_save_training_full_data['skillClassName'].toString(),
+                    // '14',
                     style: TextStyle(
                       fontFamily: font_style_name,
                       color: Colors.white,
@@ -1418,7 +1511,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
               Expanded(
                 child: Align(
                   child: Text(
-                    'Next LV XP : ${widget.str_next_level_xp}',
+                    'Next LV XP : ${dict_save_training_full_data['TrainingLV'].toString()}',
+                    // '15',
                     style: TextStyle(
                       fontFamily: font_style_name,
                       color: Colors.white,
@@ -2013,10 +2107,13 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
   delete_goal_WB(
     String quote_id,
   ) async {
-    print('=====> POST : DELETE QUOTES');
+    if (kDebugMode) {
+      print('=====> POST : DELETE QUOTES');
+    }
 
-    str_loader_title = '0';
-    setState(() {});
+    setState(() {
+      str_loader_title = '0';
+    });
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -2047,7 +2144,6 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
         //
         func_quotes_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -2243,7 +2339,6 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
         //
         func_notes_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',

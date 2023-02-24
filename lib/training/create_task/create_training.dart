@@ -119,7 +119,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
             Icons.chevron_left,
             color: Colors.white,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop('training_added'),
         ),
       ),
       body: Column(
@@ -355,7 +355,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop('training_added');
                           //
                           str_category_id =
                               arr_get_category_list[index]['id'].toString();
@@ -393,7 +393,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
             TextButton(
               child: const Text('Dismiss'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop('training_added');
               },
             ),
           ],

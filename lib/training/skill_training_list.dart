@@ -174,7 +174,7 @@ class _SkillTrainingListScreenState extends State<SkillTrainingListScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
+                        /*Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => TrainingListScreen(
@@ -209,7 +209,7 @@ class _SkillTrainingListScreenState extends State<SkillTrainingListScreen> {
                                   arr_training_list[i]['trainingId'].toString(),
                             ),
                           ),
-                        );
+                        );*/
                       },
                       child: Container(
                         height: 46,
