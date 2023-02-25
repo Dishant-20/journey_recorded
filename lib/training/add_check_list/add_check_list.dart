@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,9 +12,14 @@ import 'package:journey_recorded/Utils.dart';
 
 class AddCheckListScreen extends StatefulWidget {
   const AddCheckListScreen(
-      {super.key, required this.str_training_id_check_list});
+      {super.key,
+      required this.str_training_id_check_list,
+      this.get_dict_training_data});
 
   final String str_training_id_check_list;
+
+  final get_dict_training_data;
+
   @override
   State<AddCheckListScreen> createState() => _AddCheckListScreenState();
 }
@@ -32,8 +38,31 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
   @override
   void initState() {
     super.initState();
-    cont_select_routine = TextEditingController();
-    cont_description = TextEditingController();
+    if (kDebugMode) {
+      print('data ===> ');
+      print(widget.get_dict_training_data);
+    }
+
+    if (widget.get_dict_training_data != '') {
+      // not empty
+      //
+
+      cont_select_routine = TextEditingController(
+        text: widget.get_dict_training_data['message'].toString(),
+      );
+      cont_description = TextEditingController(
+        text: widget.get_dict_training_data['message'].toString(),
+      );
+      //
+      str_routine_id = widget.get_dict_training_data['routineId'].toString();
+      //
+    } else {
+      //
+      print('object 12.24');
+      cont_select_routine = TextEditingController();
+      cont_description = TextEditingController();
+      //
+    }
 
     get_routine_list_WB();
   }
@@ -48,7 +77,9 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
 
 // get routine list
   get_routine_list_WB() async {
-    print('=====> POST : ROUTINE LIST');
+    if (kDebugMode) {
+      print('=====> POST : ROUTINE LIST');
+    }
 
     final resposne = await http.post(
       Uri.parse(
@@ -67,14 +98,33 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print('dushu');
-    print(get_data);
-    print('dushu');
+
+    if (kDebugMode) {
+      // print(get_data);
+    }
+
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
         //
         arr_select_routine = get_data['data'];
         main_loader = '1';
+
+        if (widget.get_dict_training_data != '') {
+          // print(arr_select_routine);
+          for (int i = 0; i < arr_select_routine.length; i++) {
+            if (arr_select_routine[i]['routineId'].toString() ==
+                widget.get_dict_training_data['routineId'].toString()) {
+              if (kDebugMode) {
+                print(arr_select_routine[i]['message'].toString());
+              }
+              //
+              cont_select_routine.text =
+                  arr_select_routine[i]['message'].toString();
+              //
+            }
+          }
+        }
+
         setState(() {});
       } else {
         print(
@@ -148,7 +198,15 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
                 (str_save_continue_loader == '1')
                     ? InkWell(
                         onTap: () {
-                          func_create_check_list_WB();
+                          if (widget.get_dict_training_data != '') {
+                            //
+                            func_edit_check_list_WB();
+                            //
+                          } else {
+                            //
+                            func_create_check_list_WB();
+                            //
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.all(
@@ -275,6 +333,58 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
         <String, String>{
           'action': 'addchecklist',
           'userId': prefs.getInt('userId').toString(),
+          'routineId': str_routine_id.toString(),
+          'message': cont_description.text.toString(),
+          'profesionalId': widget.str_training_id_check_list.toString(),
+          'profesionalType': 'Training'.toString(),
+        },
+      ),
+    );
+
+    // convert data to dict
+    var get_data = jsonDecode(resposne.body);
+
+    print(get_data);
+
+    if (resposne.statusCode == 200) {
+      if (get_data['status'].toString().toLowerCase() == 'success') {
+        //
+        Navigator.pop(context, 'check_list_added');
+        //
+      } else {
+        str_save_continue_loader = '1';
+        setState(() {});
+        print(
+          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+        );
+      }
+    } else {
+      str_save_continue_loader = '1';
+      setState(() {});
+    }
+  }
+
+  // edit training
+  func_edit_check_list_WB() async {
+    setState(() {
+      str_save_continue_loader = '0';
+    });
+    // print(str_routine_id);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final resposne = await http.post(
+      Uri.parse(
+        application_base_url,
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'action': 'addchecklist',
+          'userId': prefs.getInt('userId').toString(),
+          'checklistId':
+              widget.get_dict_training_data['checklistId'].toString(),
           'routineId': str_routine_id.toString(),
           'message': cont_description.text.toString(),
           'profesionalId': widget.str_training_id_check_list.toString(),

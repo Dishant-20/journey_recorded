@@ -13,12 +13,12 @@ import 'package:journey_recorded/goals/edit_notes_in_goal/edit_notes_in_goal.dar
 import 'package:journey_recorded/quotes/add_quotes/add_quotes.dart';
 import 'package:journey_recorded/quotes/edit_quotes/edit_quotes.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
-import 'package:journey_recorded/task/create_task/create_task.dart';
+// import 'package:journey_recorded/task/create_task/create_task.dart';
 import 'package:journey_recorded/training/add_check_list/add_check_list.dart';
 import 'package:journey_recorded/training/add_routine/add_routine.dart';
-import 'package:journey_recorded/training/create_task/create_training.dart';
+// import 'package:journey_recorded/training/create_task/create_training.dart';
 import 'package:journey_recorded/training/training_header.dart';
-import 'package:journey_recorded/training/training_quotes.dart';
+// import 'package:journey_recorded/training/training_quotes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TrainingListScreen extends StatefulWidget {
@@ -74,10 +74,6 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
   void initState() {
     super.initState();
     // var string = widget.str_date;
-    final splitted = '2023-12-12'; //widget.str_date_time.split(' ');
-    print(splitted);
-    get_str_date = splitted[0].toString();
-    get_str_time = splitted[1].toString();
 
     // [Hello, world!];
     get_goals_list_WB();
@@ -118,6 +114,13 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
         //
         dict_save_training_full_data = get_data['data'][0];
         //
+        final splitted = dict_save_training_full_data['SetReminder'].split(' ');
+        if (kDebugMode) {
+          print(splitted);
+        }
+        get_str_date = splitted[0].toString();
+        get_str_time = splitted[1].toString();
+        //
         // get and parse data
         /*arr_training_list.clear();
         for (var i = 0; i < get_data['data'].length; i++) {
@@ -152,7 +155,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 3,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             title: Text(
@@ -208,6 +211,28 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       backgroundColor: Colors.transparent,
                     ),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stats lvs'.toUpperCase(),
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      fontSize: 16.0,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Grinds'.toUpperCase(),
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      fontSize: 16.0,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
                 )
               ],
               onTap: (value) {
@@ -234,12 +259,18 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                   setState(() {});
                   func_quotes_WB();
                 } else if (value == 3) {
-                  // quotes
+                  // stats
+                  // stats
+                  //
+                  str_UI_show = 'stats_lvs';
+                  setState(() {});
+                  //
                 } else if (value == 4) {
-                  // quotes
-                } else if (value == 5) {
-                  // link
+                  // grinds
                 }
+                // else if (value == 5) {
+                //   // link
+                // }
               },
             ),
           ),
@@ -323,17 +354,86 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                     ] else ...[
                       //
                       quote_UI(context),
-                      /*TrainingQuotesScreen(
-                  str_training_quote_skill_class:
-                      widget.str_skill_class.toString(),
-                  str_training_quote_next_level:
-                      widget.str_next_level_xp.toString(),
-                ),*/
+
+                      //
+                    ],
+                    // tab 4 ( stats lvs )
+                    if (str_UI_show == 'routine') ...[
+                      //
+                      routine_UI()
+                      //
+                    ] else if (str_UI_show == 'check_list') ...[
+                      //
+                      check_list_UI(),
+                      //
+                    ] else if (str_UI_show == 'stats') ...[
+                      //
+                      stats_UI(),
+                      //
+                    ] else if (str_UI_show == 'frequency') ...[
+                      //
+                      frequency_UI(),
+                      //
+                    ] else ...[
+                      //
+                      stats_UI(),
+                      //
+                    ],
+
+                    // tab 5 ( grinds )
+                    if (str_UI_show == 'routine') ...[
+                      //
+                      routine_UI()
+                      //
+                    ] else if (str_UI_show == 'check_list') ...[
+                      //
+                      check_list_UI(),
+                      //
+                    ] else if (str_UI_show == 'stats') ...[
+                      //
+                      stats_UI(),
+                      //
+                    ] else if (str_UI_show == 'frequency') ...[
+                      //
+                      frequency_UI(),
+                      //
+                    ] else ...[
+                      //
+                      stats_UI(),
                       //
                     ],
                   ],
                 ),
         ),
+      ),
+    );
+  }
+
+// stats lvs
+  SingleChildScrollView stats_lvs_UI(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          // header
+          //
+          TrainingHeaderScreen(
+            str_skill_class:
+                dict_save_training_full_data['skillClassName'].toString(),
+            str_next_level_xp:
+                dict_save_training_full_data['currentLavel'].toString(),
+          ),
+          //
+
+          Center(
+            child: Container(
+              margin: const EdgeInsets.all(10.0),
+              color: Colors.amber[600],
+              width: 48.0,
+              height: 48.0,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -345,8 +445,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       child: Column(
         children: [
           // header
-          // header_UI(context),
-          TrainingHeaderScreen(
+          //
+          const TrainingHeaderScreen(
               str_skill_class: '1', //widget.str_skill_class.toString(),
               str_next_level_xp: '2' //widget.str_next_level_xp.toString(),
               ),
@@ -794,7 +894,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                       children: <Widget>[
                         IconButton(
                           onPressed: () {
-                            print('check box click');
+                            if (kDebugMode) {
+                              print('check box click');
+                            }
                           },
                           icon: const Icon(
                             Icons.check_box_outline_blank,
@@ -802,7 +904,12 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                         ),
                         IconButton(
                           onPressed: () {
-                            print('object');
+                            if (kDebugMode) {
+                              print('checklist==>edit==>click');
+                            }
+                            //
+                            push_to_edit_check_list(context, arr_check_list[i]);
+                            //
                           },
                           icon: const Icon(
                             Icons.edit,
@@ -810,7 +917,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                         ),
                         IconButton(
                           onPressed: () {
-                            print('object');
+                            if (kDebugMode) {
+                              print('object');
+                            }
                             delete_check_list_WB('Delete checklist',
                                 arr_check_list[i]['checklistId'].toString());
                           },
@@ -869,8 +978,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                 ),
                 const Spacer(),
                 Text(
-                    // widget.str_stats.toString(),
-                    '3'),
+                  //
+                  dict_save_training_full_data['TStats'].toString(),
+                  // '3',
+                ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -889,7 +1000,361 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
         //
         header_UI(context),
         //
-        Padding(
+        const SizedBox(
+          height: 20,
+        ),
+        Text(
+          'FREQUENCY',
+          style: TextStyle(
+            fontFamily: font_style_name,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        //
+        const SizedBox(
+          height: 8,
+        ),
+        if (dict_save_training_full_data['Frequency'].toString() ==
+            'Mon,Wed,Fr') ...[
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            width: MediaQuery.of(context).size.width,
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(
+                14,
+              ),
+            ),
+            child: Row(
+              children: const <Widget>[
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Mon',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Wed',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Fri',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ] else if (dict_save_training_full_data['Frequency'].toString() ==
+            'Mon,Wed,Fri') ...[
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            width: MediaQuery.of(context).size.width,
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(
+                14,
+              ),
+            ),
+            child: Row(
+              children: const <Widget>[
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Mon',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Wed',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Fri',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ] else if (dict_save_training_full_data['Frequency'].toString() ==
+            'Tue,Thu,Sat') ...[
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            width: MediaQuery.of(context).size.width,
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(
+                14,
+              ),
+            ),
+            child: Row(
+              children: const <Widget>[
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Tue',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Thu',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                //
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Sat',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]
+        //
+        else if (dict_save_training_full_data['Frequency'].toString() ==
+            'Every Saturday') ...[
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            width: MediaQuery.of(context).size.width,
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(
+                14,
+              ),
+            ),
+            child: Row(
+              children: const <Widget>[
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Every Saturday',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+              ],
+            ),
+          ),
+        ] else if (dict_save_training_full_data['Frequency'].toString() ==
+            'Daily') ...[
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            width: MediaQuery.of(context).size.width,
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(
+                14,
+              ),
+            ),
+            child: Row(
+              children: const <Widget>[
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Daily',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                //
+              ],
+            ),
+          ),
+        ],
+        //
+        const SizedBox(
+          height: 20,
+        ),
+        Text(
+          'REMINDER',
+          style: TextStyle(
+            fontFamily: font_style_name,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        //
+        Container(
+          margin: const EdgeInsets.all(10.0),
+          width: MediaQuery.of(context).size.width,
+          height: 48.0,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 71, 71, 71),
+            borderRadius: BorderRadius.circular(
+              14,
+            ),
+          ),
+          child: Row(
+            children: const <Widget>[
+              Expanded(
+                child: Center(
+                  child: Text(
+                    //
+                    'DATE',
+                    //
+                    style: TextStyle(
+                      color: Colors.white,
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    //
+                    'TIME',
+                    //
+                    style: TextStyle(
+                      color: Colors.white,
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              //
+            ],
+          ),
+        ),
+        //
+        Container(
+          margin: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          width: MediaQuery.of(context).size.width,
+          height: 48.0,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(
+              14,
+            ),
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Center(
+                  child: Text(
+                    //
+                    get_str_date,
+                    //
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      color: Colors.black,
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    //
+                    get_str_time,
+                    //
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      color: Colors.black,
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              //
+            ],
+          ),
+        ),
+
+        /*Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
             height: 50,
@@ -906,6 +1371,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
                 const SizedBox(
                   width: 10,
                 ),
+                Text('data'),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -1036,7 +1502,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
               ],
             ),
           ),
-        ),
+        ),*/
       ],
     );
   }
@@ -1511,7 +1977,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
               Expanded(
                 child: Align(
                   child: Text(
-                    'Next LV XP : ${dict_save_training_full_data['TrainingLV'].toString()}',
+                    'Next LV XP : ${dict_save_training_full_data['TrainingLV']}',
                     // '15',
                     style: TextStyle(
                       fontFamily: font_style_name,
@@ -2384,18 +2850,46 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       print(str_UI_show);
     }
     if (str_UI_show == 'notes') {
-      print('add note');
+      if (kDebugMode) {
+        print('add note');
+      }
       push_to_create_notes(context);
     } else if (str_UI_show == 'routine') {
-      print('add routine 2');
+      if (kDebugMode) {
+        print('add routine 2');
+      }
       push_to_add_routine(context);
     } else if (str_UI_show == 'quotes') {
-      print('add quote');
+      if (kDebugMode) {
+        print('add quote');
+      }
       add_quotes_push_via_future(context);
     } else if (str_UI_show == 'check_list') {
-      print('add check list');
+      if (kDebugMode) {
+        print('add check list');
+      }
       push_to_add_check_list(context);
     }
+  }
+
+  Future<void> push_to_edit_check_list(
+      BuildContext context, training_data) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCheckListScreen(
+          str_training_id_check_list:
+              dict_save_training_full_data['trainingId'].toString(),
+          get_dict_training_data: training_data,
+        ),
+      ),
+    );
+
+    print('result =====> ' + result);
+
+    if (!mounted) return;
+
+    check_list_WB();
   }
 
   Future<void> push_to_add_check_list(BuildContext context) async {
@@ -2403,7 +2897,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => AddCheckListScreen(
-          str_training_id_check_list: widget.str_training_id.toString(),
+          str_training_id_check_list:
+              dict_save_training_full_data['trainingId'].toString(),
+          get_dict_training_data: '',
         ),
       ),
     );
@@ -2451,7 +2947,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       body: jsonEncode(
         <String, String>{
           'action': 'routinelist',
-          'profesionalId': widget.str_training_id.toString(),
+          'profesionalId':
+              dict_save_training_full_data['trainingId'].toString(),
           // 'profesionalId': '5'.toString(),
         },
       ),
@@ -2509,7 +3006,8 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       body: jsonEncode(
         <String, String>{
           'action': 'checklist',
-          'profesionalId': widget.str_training_id.toString(),
+          'profesionalId':
+              dict_save_training_full_data['trainingId'].toString(),
           // 'profesionalId': '5'.toString(),
           'profesionalType': 'Training'.toString(),
           'pageNo': '1'.toString(),
