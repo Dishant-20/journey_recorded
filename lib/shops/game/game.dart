@@ -2,13 +2,15 @@
 
 import 'dart:convert';
 
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/shop_click_details/shop_click_details.dart';
+import 'package:journey_recorded/shops/shop_item_details/shop_item_details.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,8 +39,10 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       str_main_loader = '0';
     });
+
     //
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
 
     final resposne = await http.post(
       Uri.parse(
@@ -50,7 +54,9 @@ class _GameScreenState extends State<GameScreen> {
       body: jsonEncode(
         <String, String>{
           'action': 'productlist',
-          'userId': prefs.getInt('userId').toString(),
+          // 'userId': prefs.getInt('userId').toString(),
+          'categoryId': '',
+          'forSell': '1',
           'pageNo': '1',
         },
       ),
@@ -58,7 +64,9 @@ class _GameScreenState extends State<GameScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       //
@@ -117,7 +125,9 @@ class _GameScreenState extends State<GameScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       //
@@ -139,9 +149,11 @@ class _GameScreenState extends State<GameScreen> {
           });
         }
       } else {
-        print(
-          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
-        );
+        if (kDebugMode) {
+          print(
+            '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+          );
+        }
       }
     } else {
       // return postList;
@@ -154,7 +166,7 @@ class _GameScreenState extends State<GameScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -190,7 +202,7 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Actions',
@@ -199,10 +211,12 @@ class _GameScreenState extends State<GameScreen> {
                       fontSize: 20.0,
                     ),
                   ),
-                ),
+                ),*/
               ],
               onTap: (value) {
-                print(value);
+                if (kDebugMode) {
+                  print(value);
+                }
                 if (value == 0) {
                   product_list_WB();
                 } else if (value == 1) {
@@ -216,6 +230,7 @@ class _GameScreenState extends State<GameScreen> {
               navigation_title_shops,
 
               ///
+
               style: TextStyle(
                 fontFamily: font_style_name,
                 fontSize: 18.0,
@@ -243,7 +258,7 @@ class _GameScreenState extends State<GameScreen> {
               //
               tabbar_OUT_GAMES_ui(context),
               //
-              ListView.builder(
+              /*ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 //scrollDirection: Axis.vertical,
@@ -281,7 +296,7 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   );
                 },
-              ),
+              ),*/
             ],
           ),
         ),
@@ -326,7 +341,9 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 );
               },
+              //
               // https://demo4.evirtualservices.net/journey/img/uploads/1674210674image_picker_A2D06B8E-5731-4C64-B8B3-5E0C83B5FF7A-33908-0000007423B30F37.jpg
+              //
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 20.0,
@@ -335,7 +352,12 @@ class _GameScreenState extends State<GameScreen> {
                 height: 120,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(233, 233, 233, 1),
+                  color: const Color.fromRGBO(
+                    233,
+                    233,
+                    233,
+                    1,
+                  ),
                   borderRadius: BorderRadius.circular(
                     12.0,
                   ),
@@ -511,68 +533,81 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   itemCount: arr_product_list.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        border: Border.all(
-                          color: Colors.grey,
+                    return InkWell(
+                      onTap: () {
+                        // ss
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ShopitemDetailsScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                // height: MediaQuery.of(context).size.height,
+                                height: 40,
+                                color: Colors.white,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  child: (arr_product_list[index]['image']
+                                              .toString() ==
+                                          '')
+                                      ? Image.asset('assets/images/logo.png')
+                                      : FadeInImage.assetNetwork(
+                                          placeholder:
+                                              'assets/images/loader.gif',
+                                          image: arr_product_list[index]
+                                                  ['image']
+                                              .toString(),
+                                        ),
+                                ),
+                              ),
+                            ),
+                            Container(
                               // height: MediaQuery.of(context).size.height,
                               height: 40,
                               color: Colors.white,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0),
-                                child: (arr_product_list[index]['image']
-                                            .toString() ==
-                                        '')
-                                    ? Image.asset('assets/images/logo.png')
-                                    : FadeInImage.assetNetwork(
-                                        placeholder: 'assets/images/loader.gif',
-                                        image: arr_product_list[index]['image']
-                                            .toString(),
-                                      ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // height: MediaQuery.of(context).size.height,
-                            height: 40,
-                            color: Colors.white,
-                            child: Center(
-                              child: Text(
-                                //
-                                arr_product_list[index]['name'].toString(),
-                                //
-                                style: TextStyle(
-                                  fontFamily: font_style_name,
-                                  fontSize: 18.0,
+                              child: Center(
+                                child: Text(
+                                  //
+                                  arr_product_list[index]['name'].toString(),
+                                  //
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Container(
-                            // height: MediaQuery.of(context).size.height,
-                            height: 40,
-                            color: Colors.white,
-                            child: Center(
-                              child: Text(
-                                //
-                                '\$${arr_product_list[index]['salePrice']}',
-                                //
-                                style: TextStyle(
-                                  fontFamily: font_style_name,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
+                            Container(
+                              // height: MediaQuery.of(context).size.height,
+                              height: 40,
+                              color: Colors.white,
+                              child: Center(
+                                child: Text(
+                                  //
+                                  '\$${arr_product_list[index]['salePrice']}',
+                                  //
+                                  style: TextStyle(
+                                    fontFamily: font_style_name,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

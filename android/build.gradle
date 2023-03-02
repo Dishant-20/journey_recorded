@@ -13,10 +13,10 @@ buildscript {
 }
 
 //android {
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
+    // buildTypes {
+    //     debug {
+    //         signingConfig signingConfigs.debug
+    //     }
 //        release {
 //            // Caution! In production, you need to generate your own keystore file.
 //            // see https://facebook.github.io/react-native/docs/signed-apk-android.
@@ -24,7 +24,7 @@ buildscript {
 //            minifyEnabled enableProguardInReleaseBuilds
 //            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
 //        }
-    }
+    // }
 //}
 
 allprojects {

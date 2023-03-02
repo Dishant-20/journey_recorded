@@ -127,9 +127,11 @@ class _AddCheckListScreenState extends State<AddCheckListScreen> {
 
         setState(() {});
       } else {
-        print(
-          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
-        );
+        if (kDebugMode) {
+          print(
+            '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+          );
+        }
       }
     } else {
       // return postList;

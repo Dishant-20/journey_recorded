@@ -460,8 +460,9 @@ class _SkillsScreenState extends State<SkillsScreen> {
                           //
                           if (kDebugMode) {
                             print(arr_skills[i]);
+                            print('object');
                           }
-//
+                          //
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -473,6 +474,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
                               ),
                             ),
                           );
+                          //
                         }
                         //
                         // Navigator.push(
@@ -1067,6 +1069,9 @@ class _SkillsScreenState extends State<SkillsScreen> {
     BuildContext context,
     get_skill_id,
   ) async {
+    //
+    print(get_skill_id);
+    //
     final result = await Navigator.push(
       context,
       MaterialPageRoute(

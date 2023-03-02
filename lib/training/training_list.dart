@@ -40,6 +40,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
   var str_main_loader = '0';
   var str_UI_show = 'n.a.';
   var str_bottom_bar_color = '0';
+  var str_get_training_id;
 
   // routine
   var arr_routine_list = [];
@@ -75,6 +76,9 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
     super.initState();
     // var string = widget.str_date;
 
+    print('=====> dishant rajput');
+    print(widget.str_training_id);
+
     // [Hello, world!];
     get_goals_list_WB();
   }
@@ -106,13 +110,15 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
     if (kDebugMode) {
-      // print(get_data);
+      print(get_data);
     }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
         //
         dict_save_training_full_data = get_data['data'][0];
+        //
+
         //
         final splitted = dict_save_training_full_data['SetReminder'].split(' ');
         if (kDebugMode) {
@@ -2916,12 +2922,14 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => AddRoutineScreen(
-          str_professional_id: widget.str_training_id.toString(),
+          str_professional_id:
+              dict_save_training_full_data['trainingId'].toString(),
+          // widget.str_training_id.toString(),
         ),
       ),
     );
 
-    // print('result =====> ' + result);
+    print('result =====> ' + result);
 
     if (!mounted) return;
 
