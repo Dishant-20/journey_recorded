@@ -29,6 +29,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^2.7.0
+  firebase_messaging: ^14.2.1
+  firebase_auth: 
+  # ^4.2.5
+  cloud_firestore: ^4.3.1
   cupertino_icons: ^1.0.2
   adaptive_action_sheet: ^2.0.2
   flutter_markdown: ^0.6.13

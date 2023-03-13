@@ -1,13 +1,16 @@
 // ignore_for_file: non_constant_identifier_names, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/guild/guild.dart';
+import 'package:journey_recorded/guild/guild_chat/guild_chat.dart';
 import 'package:journey_recorded/guild/guild_details/guild_details.dart';
+import 'package:journey_recorded/guild/guild_header_UI/guild_header_UI.dart';
 import 'package:journey_recorded/guild/my_guild_members/my_guild_members.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -144,399 +147,15 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
-            Center(
-              child: Container(
-                // margin: const EdgeInsets.all(10.0),
-                // color: Colors.amber[600],
-                width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromRGBO(
-                        54,
-                        30,
-                        107,
-                        1,
-                      ),
-                      Color.fromRGBO(
-                        92,
-                        21,
-                        93,
-                        1,
-                      ),
-                      Color.fromRGBO(
-                        138,
-                        0,
-                        70,
-                        1,
-                      ),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                // height: 48.0,
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(10.0),
-                      // color: Colors.amber[800],
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(),
-                      ),
-                      child: Image.network(
-                        widget.dict_value['imge'].toString(),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-
-                    //
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        color: Colors.transparent,
-                        // width: 48.0,
-                        height: 120,
-                        child: Column(
-                          children: [
-                            Container(
-                              // margin: const EdgeInsets.all(10.0),
-                              color: Colors.transparent,
-                              width: MediaQuery.of(context).size.width,
-                              height: 40,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: '',
-                                    style: TextStyle(
-                                      fontFamily: font_style_name,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: widget.dict_value['name']
-                                            .toString(),
-                                        style: TextStyle(
-                                          fontFamily: font_style_name,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      // TextSpan(text: ' world!'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            //
-                            Container(
-                              // margin: const EdgeInsets.all(10.0),
-                              color: Colors.transparent,
-                              width: MediaQuery.of(context).size.width,
-                              height: 40,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  //
-                                  widget.dict_value['subject'].toString(),
-                                  //
-                                  style: TextStyle(
-                                    fontFamily: font_style_name,
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            //
-                            Container(
-                              // margin: const EdgeInsets.all(10.0),
-                              color: Colors.transparent,
-                              width: MediaQuery.of(context).size.width,
-                              height: 40,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    child: Image.asset(
-                                      'assets/images/btn_round.png',
-                                      height: 140,
-                                      width: MediaQuery.of(context).size.width,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(
-                                          8,
-                                        ),
-                                      ),
-                                      // border: Border.all(),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    child: Center(
-                                      child: InkWell(
-                                        onTap: () async {
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
-
-                                          if (kDebugMode) {
-                                            print(widget.dict_value['userId']);
-                                            print(prefs
-                                                .getInt('userId')
-                                                .toString());
-                                          }
-
-                                          (prefs.getInt('userId').toString() ==
-                                                  widget.dict_value['userId']
-                                                      .toString())
-                                              ? Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyGuildMembersScreen(
-                                                      str_guild_id: widget
-                                                          .dict_value['gluidId']
-                                                          .toString(),
-                                                      str_remove_member: 'yes',
-                                                    ),
-                                                  ),
-                                                )
-                                              : Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyGuildMembersScreen(
-                                                      str_guild_id: widget
-                                                          .dict_value['gluidId']
-                                                          .toString(),
-                                                      str_remove_member: 'no',
-                                                    ),
-                                                  ),
-                                                );
-                                          // print();
-
-                                          /**/
-                                        },
-                                        child: Text(
-                                          //
-                                          'Max Member : ${widget.dict_value['maxNumber']}',
-                                          //
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: font_style_name,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    // top: 45,
-                                    // left: 20,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    //
-                  ],
-                ),
-              ),
+            //
+            // guild_header_UI(context),
+            GuildHeaderUIScreen(
+              dict_value: widget.dict_value,
             ),
+            //
 
-            // 250 , 0 ,30
-            Container(
-              // margin: const EdgeInsets.all(10.0),
-              color: const Color.fromRGBO(250, 0, 30, 1),
-              width: MediaQuery.of(context).size.width,
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  //
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (kDebugMode) {
-                          print('chat click');
-                        }
-                        //
-                        setState(() {
-                          str_chat_click = '1';
-                          str_information_click = '0';
-                          str_choose_guild_click = '0';
-                        });
-
-                        //
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          left: 8,
-                        ),
-                        height: 70,
-                        decoration: (str_chat_click == '0')
-                            ? const BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0.4,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 0,
-                                  ),
-                                ),
-                              )
-                            : const BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0.4,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                        child: Center(
-                          child: Text(
-                            'CHAT',
-                            style: TextStyle(
-                              fontFamily: font_style_name,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (kDebugMode) {
-                          print('chat click');
-                        }
-                        //
-                        setState(() {
-                          str_chat_click = '0';
-                          str_information_click = '1';
-                          str_choose_guild_click = '0';
-                        });
-
-                        //
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          left: 8,
-                        ),
-                        height: 70,
-                        decoration: (str_information_click == '0')
-                            ? BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0.4,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 0,
-                                  ),
-                                ),
-                              )
-                            : BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0.4,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                        child: Center(
-                          child: Text(
-                            'INFORMATION',
-                            style: TextStyle(
-                              fontFamily: font_style_name,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (kDebugMode) {
-                          print('chat click');
-                        }
-                        //
-                        setState(() {
-                          str_guild_loader = '0';
-                          str_chat_click = '0';
-                          str_information_click = '0';
-                          str_choose_guild_click = '1';
-                        });
-                        //
-                        get_goals_list_WB('');
-                        //
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          left: 8,
-                          right: 8,
-                        ),
-                        height: 70,
-                        decoration: (str_choose_guild_click == '0')
-                            ? const BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 0,
-                                  ),
-                                ),
-                              )
-                            : const BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(
-                                    width: 0,
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                        child: Center(
-                          child: Text(
-                            'CHOOSE GUILD',
-                            style: TextStyle(
-                              fontFamily: font_style_name,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  //
-                ],
-              ),
-            ),
+            //
+            guild_click_tabs_UI(context),
             //
             if (str_information_click == '1') ...[
               for (int i = 0; i < arr_new_guild.length; i++) ...[
@@ -551,13 +170,6 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
               ],
             ] else if (str_choose_guild_click == '1') ...[
               //
-
-              //
-              // const SizedBox(
-              //   height: 40,
-              // ),
-              // const CircularProgressIndicator(),
-              //
               if (str_guild_loader == '0') const CircularProgressIndicator(),
               if (str_guild_loader == '2')
                 const CustomeLoaderPopUp(
@@ -565,140 +177,491 @@ class _GuildAfterJoinScreenState extends State<GuildAfterJoinScreen> {
                   str_status: '4',
                 )
               else
-                ListView.separated(
-                  separatorBuilder: (context, index) => const Divider(
-                    color: Colors.black,
-                  ),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: arr_guild_list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        //
-                        if (arr_guild_list[index]['youJoin'].toString() ==
-                            'Yes') {
-                          if (kDebugMode) {
-                            print('object 121212');
-                          }
+                //
+                choose_guild_UI(),
+              //
+            ] else ...[
+              //
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection(
+                      'message/evs_cameroon_chat/one_to_one_chat',
+                    )
+                    .orderBy('time_stamp', descending: false)
+                    // .orderBy('time_stamp')
+                    // .limit(20)
+                    .where('users', arrayContainsAny: [
+                  'room_id',
+                  'reverse_room_id',
+                ]).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    //
+                    // func_scroll_to_bottom();
+                    //
+                    // var save_snapshot_value = snapshot.data!.docs.reversed.toList();
 
-                          push_to_quit_grid(context, index);
-                          //
-                        } else {
-                          if (kDebugMode) {
-                            print(arr_guild_list[index]);
-                          }
-                          //
-                          if (kDebugMode) {
-                            print('object 121212.1');
-                          }
-                          //
-                          push_to_quit_grid(context, index);
-                        }
-                        //
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          top: 0.0,
-                        ),
-                        height: 80,
-                        color: Colors.transparent,
-                        child: ListTile(
-                          // iconColor: Colors.pink,
-                          leading: Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.amber,
-                              borderRadius: BorderRadius.circular(
-                                40.0,
-                              ),
-                            ),
-                            child: Container(
-                              height: 60,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                // color: Colors.blueAccent[200],
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(40.0),
-                              ),
-                              child:
-                                  (arr_guild_list[index]['imge'].toString() !=
-                                          '')
-                                      ? CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                            arr_guild_list[index]['imge']
-                                                .toString(),
-                                          ),
-                                          radius: 60,
-                                        )
-                                      : Align(
-                                          child: Text(
-                                            //
-                                            // arr_guild_list[index]['name'].toString(),
-                                            func_get_initials(
-                                                arr_guild_list[index]['name']
-                                                    .toString()),
-
-                                            //
-                                            style: TextStyle(
-                                              fontFamily: font_style_name,
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                            ),
+                    // var save_snapshot_value = snapshot.data!.docs.toList();
+                    // if (kDebugMode) {
+                    //   print(save_snapshot_value);
+                    // }
+                    //
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 80),
+                      color: Colors.transparent,
+                      /*child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          // controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            children: [
+                              for (int i = 0;
+                                  i < save_snapshot_value.length;
+                                  i++) ...[
+                                (save_snapshot_value[i]['sender_id']
+                                            .toString() ==
+                                        widget.str_get_login_user_id.toString())
+                                    ? right_side_UI(save_snapshot_value, i)
+                                    : left_side_chat_UI(save_snapshot_value, i),
+                              ],
+                            ],
                           ),
+                        ),
+                      ),*/
+                    );
+                  } else if (snapshot.hasError) {
+                    if (kDebugMode) {
+                      print(snapshot.error);
+                    }
+                    return Center(
+                      child: Text(
+                        'Index Issue. Please contact admin.',
+                        style: TextStyle(
+                          fontFamily: font_style_name,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('no chat found'),
+                    );
+                  }
+                },
+              ),
+              //
+            ],
+            //
+          ],
+        ),
+      ),
+    );
+  }
 
-                          title: Text(
+  ListView choose_guild_UI() {
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(
+        color: Colors.black,
+      ),
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: arr_guild_list.length,
+      itemBuilder: (BuildContext context, int index) {
+        return InkWell(
+          onTap: () {
+            //
+            if (arr_guild_list[index]['youJoin'].toString() == 'Yes') {
+              if (kDebugMode) {
+                print('object 121212');
+              }
+
+              push_to_quit_grid(context, index);
+              //
+            } else {
+              if (kDebugMode) {
+                print(arr_guild_list[index]);
+              }
+              //
+              if (kDebugMode) {
+                print('object 121212.1');
+              }
+              //
+              push_to_quit_grid(context, index);
+            }
+            //
+          },
+          child: Container(
+            margin: const EdgeInsets.only(
+              top: 0.0,
+            ),
+            height: 80,
+            color: Colors.transparent,
+            child: ListTile(
+              // iconColor: Colors.pink,
+              leading: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(
+                    40.0,
+                  ),
+                ),
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    // color: Colors.blueAccent[200],
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  child: (arr_guild_list[index]['imge'].toString() != '')
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            arr_guild_list[index]['imge'].toString(),
+                          ),
+                          radius: 60,
+                        )
+                      : Align(
+                          child: Text(
                             //
-                            arr_guild_list[index]['name'].toString(),
+                            // arr_guild_list[index]['name'].toString(),
+                            func_get_initials(
+                                arr_guild_list[index]['name'].toString()),
+
                             //
                             style: TextStyle(
                               fontFamily: font_style_name,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: RichText(
-                            text: TextSpan(
-                              text:
-                                  'Total Member : ${arr_guild_list[index]['maxNumber']}',
-                              style: TextStyle(
-                                fontFamily: font_style_name,
-                                fontSize: 16.0,
-                                color: Colors.orange,
-                                // fontWeight: FontWeight.bold,
-                              ),
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: '\n',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      'Miles : ${arr_guild_list[index]['miles']}',
-                                  style: TextStyle(
-                                    fontFamily: font_style_name,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
                 ),
-              //
-            ],
-            //
+              ),
+
+              title: Text(
+                //
+                arr_guild_list[index]['name'].toString(),
+                //
+                style: TextStyle(
+                  fontFamily: font_style_name,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: RichText(
+                text: TextSpan(
+                  text: 'Total Member : ${arr_guild_list[index]['maxNumber']}',
+                  style: TextStyle(
+                    fontFamily: font_style_name,
+                    fontSize: 16.0,
+                    color: Colors.orange,
+                    // fontWeight: FontWeight.bold,
+                  ),
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: '\n',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Miles : ${arr_guild_list[index]['miles']}',
+                      style: TextStyle(
+                        fontFamily: font_style_name,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Container guild_click_tabs_UI(BuildContext context) {
+    return Container(
+      // margin: const EdgeInsets.all(10.0),
+      color: const Color.fromRGBO(250, 0, 30, 1),
+      width: MediaQuery.of(context).size.width,
+      height: 70,
+      child: Row(
+        children: <Widget>[
+          //
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                //
+                if (kDebugMode) {
+                  print('chat click 2');
+                }
+                //
+                setState(() {
+                  str_chat_click = '1';
+                  str_information_click = '0';
+                  str_choose_guild_click = '0';
+                });
+
+                //
+              },
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 8,
+                ),
+                height: 70,
+                decoration: (str_chat_click == '0')
+                    ? const BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border(
+                          right: BorderSide(
+                            width: 0.4,
+                          ),
+                          bottom: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                      )
+                    : const BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border(
+                          right: BorderSide(
+                            width: 0.4,
+                          ),
+                          bottom: BorderSide(
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                child: Center(
+                  child: Text(
+                    'CHAT',
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          //
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (kDebugMode) {
+                  print('chat click');
+                }
+                //
+                setState(() {
+                  str_chat_click = '0';
+                  str_information_click = '1';
+                  str_choose_guild_click = '0';
+                });
+
+                //
+              },
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 8,
+                ),
+                height: 70,
+                decoration: (str_information_click == '0')
+                    ? BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            width: 0.4,
+                          ),
+                          bottom: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                      )
+                    : BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            width: 0.4,
+                          ),
+                          bottom: BorderSide(
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                child: Center(
+                  child: Text(
+                    'INFORMATION',
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          //
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (kDebugMode) {
+                  print('chat click');
+                }
+                //
+                setState(() {
+                  str_guild_loader = '0';
+                  str_chat_click = '0';
+                  str_information_click = '0';
+                  str_choose_guild_click = '1';
+                });
+                //
+                get_goals_list_WB('');
+                //
+              },
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                ),
+                height: 70,
+                decoration: (str_choose_guild_click == '0')
+                    ? const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            width: 0,
+                          ),
+                          bottom: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                      )
+                    : const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            width: 0,
+                          ),
+                          bottom: BorderSide(
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                child: Center(
+                  child: Text(
+                    'CHOOSE GUILD',
+                    style: TextStyle(
+                      fontFamily: font_style_name,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          //
+        ],
+      ),
+    );
+  }
+
+  Padding send_message_UI() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 20,
+        left: 10,
+        right: 10,
+      ),
+      child: Container(
+        padding: const EdgeInsets.only(
+          left: 10,
+          bottom: 0,
+          top: 0,
+          right: 10,
+        ),
+        // height: 60,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(
+            30,
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                if (kDebugMode) {
+                  print('gesture deducted');
+                }
+                // _showActionSheet_for_camera_gallery(context);
+              },
+              child: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: TextField(
+                // controller: cont_txt_send_message,
+                minLines: 1,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  hintText: "Write message...",
+                  hintStyle: TextStyle(
+                    color: Colors.black54,
+                    fontFamily: font_style_name,
+                    fontSize: 16.0,
+                  ),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                if (kDebugMode) {
+                  print('send button');
+                }
+                // func_send_message(cont_txt_send_message.text.toString());
+                // cont_txt_send_message.text = '';
+              },
+              child: Icon(
+                Icons.send,
+                color: Colors.black,
+                size: 18,
+              ),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
           ],
         ),
       ),

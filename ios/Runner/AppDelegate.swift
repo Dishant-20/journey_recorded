@@ -11,3 +11,5 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
+
+// com.evs.dev.journey-recorded
