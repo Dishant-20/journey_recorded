@@ -10,18 +10,18 @@ import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/actions/actions.dart';
 import 'package:journey_recorded/active_team/active_team.dart';
 import 'package:journey_recorded/all_quotes_list/all_quotes_list.dart';
-import 'package:journey_recorded/category_list/category_list.dart';
+// import 'package:journey_recorded/category_list/category_list.dart';
 import 'package:journey_recorded/custom_files/drawer.dart';
 import 'package:journey_recorded/finance/finance.dart';
 import 'package:journey_recorded/friends/friends.dart';
 import 'package:journey_recorded/goals/goals.dart';
 import 'package:journey_recorded/grind/grind.dart';
-import 'package:journey_recorded/guild/guild.dart';
+// import 'package:journey_recorded/guild/guild.dart';
 import 'package:journey_recorded/guild/guild_list.dart';
 import 'package:journey_recorded/habits/habits.dart';
 import 'package:journey_recorded/house_1/house_1.dart';
 import 'package:journey_recorded/inventory/inventory.dart';
-import 'package:journey_recorded/invite_friend/invite_friend.dart';
+// import 'package:journey_recorded/invite_friend/invite_friend.dart';
 import 'package:journey_recorded/mission/mission.dart';
 import 'package:journey_recorded/notes/notes.dart';
 import 'package:journey_recorded/physical/physical.dart';
@@ -32,6 +32,9 @@ import 'package:journey_recorded/shops/game/game.dart';
 import 'package:journey_recorded/skills/skills.dart';
 import 'package:journey_recorded/sub_goals/sub_goals.dart';
 import 'package:journey_recorded/task/task.dart';
+// import 'package:journey_recorded/training/training_list.dart';
+import 'package:journey_recorded/training/training_list_dashboard/training_list_dashboard.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -53,6 +56,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //
   // slider
   double _currentSliderValue = 0;
+  //
+  var strTotalCoins = '0';
+  var strLoginUserLevel = '0';
   //
   var arr_dashboard_data = [
     'Goals',
@@ -103,7 +109,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 // get cart
   get_category_list_WB() async {
-    print('=====> POST : CATEGORY');
+    if (kDebugMode) {
+      print('=====> POST : CATEGORY');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final resposne = await http.post(
       Uri.parse(
@@ -114,14 +124,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       body: jsonEncode(
         <String, String>{
-          'action': 'category',
+          'action': 'categorylistbyskilllabel',
+          'userId': prefs.getInt('userId').toString()
         },
       ),
     );
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
@@ -133,15 +146,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         str_dashboard_category_loader = '1';
 
+        strTotalCoins = prefs.getInt('totalPoints').toString();
+        strLoginUserLevel = prefs.getInt('skill_Lavel').toString();
+
         setState(() {});
       } else {
-        print(
-          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
-        );
+        if (kDebugMode) {
+          print(
+            '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+          );
+        }
       }
     } else {
       // return postList;
-      print('something went wrong');
+      if (kDebugMode) {
+        print('something went wrong');
+      }
     }
   }
 
@@ -199,22 +219,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 InkWell(
                                   onTap: () {
                                     //
-                                    print(
-                                      arr_category[i]['id'].toString(),
-                                    );
-                                    /*Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CategoryListScreen(
-                                          str_category_id:
-                                              arr_category[i]['id'].toString(),
-                                          str_category_name: arr_category[i]
-                                                  ['name']
-                                              .toString(),
-                                        ),
-                                      ),
-                                    );*/
+                                    if (kDebugMode) {
+                                      print(
+                                        arr_category[i]['id'].toString(),
+                                      );
+                                    }
+
                                     //
                                     //
                                     Navigator.push(
@@ -257,7 +267,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         Center(
                                           child: Text(
                                             //
-                                            arr_category[i]['name'].toString(),
+                                            arr_category[i]['category'] +
+                                                ' : LV ' +
+                                                arr_category[i]['skill_Lavel']
+                                                    .toString(),
                                             //
                                             style: const TextStyle(
                                               color: Colors.white,
@@ -345,22 +358,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 color: Colors.transparent,
                                 child: Column(
                                   children: <Widget>[
-                                    Expanded(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        color: Colors.transparent,
-                                        child: Text(
-                                          'NRG: 21/100',
-                                          style: TextStyle(
-                                            fontFamily: font_style_name,
-                                            fontSize: 24.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                    // Icon(Icons.abc),
+                                    Row(
+                                      children: [
+                                        //
+                                        const Icon(
+                                          Icons.currency_rupee,
+                                          color: Colors.white,
+                                        ),
+                                        //
+                                        Expanded(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            color: Colors.transparent,
+                                            child: Text(
+                                              //
+                                              strTotalCoins.toString(),
+                                              //
+                                              style: TextStyle(
+                                                fontFamily: font_style_name,
+                                                fontSize: 24.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
+                                    //
+                                    Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          '13/3600',
+                                          style: TextStyle(
+                                            fontFamily: font_style_name,
+                                            fontSize: 20.0,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    //
                                     Expanded(
                                       child: Container(
                                         width:
@@ -383,35 +428,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          children: <Widget>[
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            const Icon(
-                                              Icons.money,
-                                              color: Colors.white,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              '5734,015,562',
-                                              style: TextStyle(
-                                                fontFamily: font_style_name,
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    const SizedBox(
+                                      width: 0,
                                     ),
                                   ],
                                 ),
@@ -459,18 +477,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               children: <Widget>[
                                 Container(
                                   height: 60,
-                                  width: 100,
-                                  child: Center(
-                                    child: Text(
-                                      'LV : 50',
-                                      style: TextStyle(
-                                        fontFamily: font_style_name,
-                                        fontSize: 14.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
+                                  width: 160,
+                                  decoration: const BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
                                         // image name
@@ -478,6 +486,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       fit: BoxFit.fill,
                                       // opacity: .4,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      //
+                                      'Level : ' + strLoginUserLevel.toString(),
+                                      //
+                                      style: TextStyle(
+                                        fontFamily: font_style_name,
+                                        fontSize: 14.0,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -739,6 +759,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ActionsScreen(),
+                  ),
+                );
+              } else if (arr_dashboard_data[index].toString() == 'Training') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TrainingListFromDashboard(),
                   ),
                 );
               }

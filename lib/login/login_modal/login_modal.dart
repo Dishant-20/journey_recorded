@@ -86,6 +86,9 @@ class LoginModal {
         await prefs.setString('career', user['career']);
         await prefs.setString('favroite_quote', user['favroite_quote']);
         await prefs.setString('image', user['image']);
+        await prefs.setInt('totalPoints', user['totalPoints']);
+        await prefs.setInt('skill_Lavel', user['skill_Lavel']);
+        await prefs.setString('image', user['image']);
 
         return Login_Status(
             success_alert: get_data['status'], message: get_data['msg']);

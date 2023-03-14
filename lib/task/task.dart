@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
@@ -40,7 +41,7 @@ class _TaskScreenState extends State<TaskScreen> {
   }
 
   get_category_list_WB() async {
-    print('=====> POST : GET CATEGORY');
+    print('=====> POST : GET CATEGORY 2');
 
     final resposne = await http.post(
       Uri.parse(
@@ -105,7 +106,9 @@ class _TaskScreenState extends State<TaskScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
@@ -132,13 +135,17 @@ class _TaskScreenState extends State<TaskScreen> {
 
         // get_mission_list_WB();
       } else {
-        print(
-          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
-        );
+        if (kDebugMode) {
+          print(
+            '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+          );
+        }
       }
     } else {
       // return postList;
-      print('something went wrong');
+      if (kDebugMode) {
+        print('something went wrong');
+      }
     }
   }
 
@@ -163,17 +170,6 @@ class _TaskScreenState extends State<TaskScreen> {
           ),
         ),
         backgroundColor: navigation_color,
-        actions: [
-          InkWell(
-            onTap: () {},
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          )
-        ],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -198,7 +194,9 @@ class _TaskScreenState extends State<TaskScreen> {
               for (int i = 0; i < arr_task_list.length; i++) ...[
                 InkWell(
                   onTap: () {
-                    print('fd 2');
+                    if (kDebugMode) {
+                      print('fd 2');
+                    }
 
                     func_push_to_task(
                       context,

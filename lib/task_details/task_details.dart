@@ -705,7 +705,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   child: ListTile(
                     // iconColor: Colors.pink,
                     leading: (arr_agents[index]['From_profile_picture']
-                                .toString()
                                 .toString() ==
                             '')
                         ? ClipRRect(
@@ -794,8 +793,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                             child: Center(
                               child: Text(
                                 //
-                                'Accept',
-                                // arr_agents[index]['deadline'].toString()),
+                                'Chat',
                                 //
                                 style: TextStyle(
                                   fontFamily: font_style_name,
@@ -852,7 +850,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         //
         Container(
           margin: const EdgeInsets.all(12),
-          height: 200 - 70,
+          // height: 200 - 70,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -872,7 +870,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       top: 20.0,
                     ),
                     child: Text(
-                      'Experince :',
+                      'Experience :',
                       style: TextStyle(
                         fontFamily: font_style_name,
                         fontSize: 16.0,
@@ -885,13 +883,23 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       right: 20.0,
                       top: 20.0,
                     ),
-                    child: Text(
-                      //
-                      widget.str_experince.toString(),
-                      //
-                      style: TextStyle(
-                        fontFamily: font_style_name,
-                        fontSize: 16.0,
+                    height: 30,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(
+                        4,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        //
+                        widget.str_experince.toString(),
+                        //
+                        style: TextStyle(
+                          fontFamily: font_style_name,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ),
@@ -914,6 +922,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     margin: const EdgeInsets.only(
                       left: 20.0,
                       top: 20.0,
+                      bottom: 20,
                     ),
                     child: Text(
                       'Deduct Experince :',
@@ -928,14 +937,25 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     margin: const EdgeInsets.only(
                       right: 20.0,
                       top: 20.0,
+                      bottom: 20,
                     ),
-                    child: Text(
-                      //
-                      widget.str_deduct_experince.toString(),
-                      //
-                      style: TextStyle(
-                        fontFamily: font_style_name,
-                        fontSize: 16.0,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(
+                        4,
+                      ),
+                    ),
+                    height: 30,
+                    width: 60,
+                    child: Center(
+                      child: Text(
+                        //
+                        widget.str_deduct_experince.toString(),
+                        //
+                        style: TextStyle(
+                          fontFamily: font_style_name,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ),
@@ -1379,7 +1399,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         //
         func_notes_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -1429,7 +1448,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         //
         func_check_list_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
