@@ -4,12 +4,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
-import 'package:journey_recorded/mission/mission_details/mission_details.dart';
+// import 'package:journey_recorded/mission/mission_details/mission_details.dart';
 import 'package:journey_recorded/real_main_details/real_main_details.dart';
 
 class MissionScreen extends StatefulWidget {
@@ -65,7 +66,9 @@ class _MissionScreenState extends State<MissionScreen> {
 
   // get mission details
   get_mission_list_WB() async {
-    print('=====> POST : MISSION LIST');
+    if (kDebugMode) {
+      print('=====> POST : MISSION LIST');
+    }
 
     //
     str_mission_loader = '0';
@@ -84,14 +87,16 @@ class _MissionScreenState extends State<MissionScreen> {
         <String, String>{
           'action': 'missionlist',
           'userId': prefs.getInt('userId').toString(),
-          'pageNo': ''
+          'pageNo': '1'
         },
       ),
     );
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
@@ -101,8 +106,12 @@ class _MissionScreenState extends State<MissionScreen> {
         for (var i = 0; i < get_data['data'].length; i++) {
           arr_mission_list.add(get_data['data'][i]);
         }
-
+        // setState(() {
+        // str_mission_loader = '2';
+        // });
+        //
         get_category_list_WB();
+        //
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -216,7 +225,9 @@ class _MissionScreenState extends State<MissionScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      print('object 2');
+                      if (kDebugMode) {
+                        print('object 2');
+                      }
 
                       push_to_mission_details(
                         context,
@@ -526,22 +537,34 @@ class _MissionScreenState extends State<MissionScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    // print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
         //
         arr_get_category_list = get_data['data'];
 
-        var custom_dict = {'id': '', 'name': 'ALL'};
-        arr_get_category_list.insert(0, custom_dict);
+        var custom_dict = {
+          'id': '',
+          'name': 'ALL',
+        };
+        arr_get_category_list.insert(
+          0,
+          custom_dict,
+        );
 
         if (arr_mission_list.isEmpty) {
           str_mission_loader = '1';
+          //
           setState(() {});
+          //
         } else {
           str_mission_loader = '2';
+          //
           setState(() {});
+          //
         }
       } else {
         print(
@@ -1259,14 +1282,15 @@ class _MissionScreenState extends State<MissionScreen> {
 
     var final_initial_name = '';
     // print(initials_are.length);
-    if (initials_are.length == 1) {
+    final_initial_name = initials_are[0][0].toString().toUpperCase();
+    /*if (initials_are.length == 1) {
       final_initial_name = initials_are[0][0].toString().toUpperCase();
     } else if (initials_are.length == 2) {
       final_initial_name =
           (initials_are[0][0] + initials_are[1][0]).toString().toUpperCase();
     } else {
       final_initial_name = initials_are[0][0].toString().toUpperCase();
-    }
+    }*/
     return final_initial_name;
   }
 
