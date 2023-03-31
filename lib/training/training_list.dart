@@ -76,8 +76,10 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
     super.initState();
     // var string = widget.str_date;
 
-    print('=====> dishant rajput');
-    print(widget.str_training_id);
+    if (kDebugMode) {
+      print('=====> dishant rajput');
+      print(widget.str_training_id);
+    }
 
     // [Hello, world!];
     get_goals_list_WB();
@@ -85,7 +87,7 @@ class _TrainingListScreenState extends State<TrainingListScreen> {
 
   get_goals_list_WB() async {
     if (kDebugMode) {
-      print('=====> POST : SKILL => TRAINING LIST');
+      print('=====> POST : SKILL => TRAINING LIST 2');
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

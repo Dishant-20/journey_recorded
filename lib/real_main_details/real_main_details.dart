@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:journey_recorded/Utils.dart';
@@ -3896,26 +3897,38 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
 
   //
   func_push_from_floating_button() {
-    print(str_tab_press.toString());
+    if (kDebugMode) {
+      print(str_tab_press.toString());
+    }
 
     if (str_tab_press == '0') {
       push_to_add_sub_goal(context);
     } else if (str_tab_press == 'sub_goal') {
       push_to_add_sub_goal(context);
     } else if (str_tab_press == '1') {
-      print('add note');
+      if (kDebugMode) {
+        print('add note');
+      }
       push_to_create_notes(context);
     } else if (str_tab_press == '2') {
-      print('add quote');
+      if (kDebugMode) {
+        print('add quote');
+      }
       add_quotes_push_via_future(context);
       //
     } else if (str_tab_press == '3') {
-      print('add team');
+      if (kDebugMode) {
+        print('add team');
+      }
     } else if (str_tab_press == 'tasks') {
-      print('add task');
+      if (kDebugMode) {
+        print('add task');
+      }
       push_to_create_task(context);
     } else if (str_tab_press == 'quest') {
-      print('add quest');
+      if (kDebugMode) {
+        print('add quest');
+      }
 
       //
       Navigator.push(
@@ -3934,7 +3947,9 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
       );
       //
     } else if (str_tab_press == 'mission') {
-      print('add mission');
+      if (kDebugMode) {
+        print('add mission');
+      }
       //
       Navigator.push(
         context,
@@ -3952,10 +3967,13 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
       );
       //
     } else if (str_tab_press == '4') {
-      print('add reward');
+      if (kDebugMode) {
+        print('add reward');
+      }
 
-      str_show_ui = 'add_reward';
-      setState(() {});
+      setState(() {
+        str_show_ui = 'add_reward';
+      });
     }
   }
 
@@ -3970,7 +3988,9 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
     );
 
     // ignore: prefer_interpolation_to_compose_strings
-    print('result =====> ' + result);
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
 
 // back_after_add_sub_goal
 
@@ -4390,7 +4410,6 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
         //
         func_notes_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
@@ -4440,7 +4459,6 @@ class _RealMainDetailsScreenState extends State<RealMainDetailsScreen>
         //
         func_quotes_WB();
         //
-
       } else {
         print(
           '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',

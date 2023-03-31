@@ -49,16 +49,21 @@ class TaskHeaderUI extends StatelessWidget {
                           10.0,
                         ),
                       ),
-                      gradient: LinearGradient(
-                        colors: [
-                          Color.fromRGBO(250, 220, 10, 1),
-                          Color.fromRGBO(252, 215, 10, 1),
-                          Color.fromRGBO(251, 195, 11, 1),
-                          Color.fromRGBO(250, 180, 10, 1),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                      // gradient: LinearGradient(
+                      //   colors: [
+                      //     Color.fromRGBO(250, 220, 10, 1),
+                      //     Color.fromRGBO(252, 215, 10, 1),
+                      //     Color.fromRGBO(251, 195, 11, 1),
+                      //     Color.fromRGBO(250, 180, 10, 1),
+                      //   ],
+                      //   begin: Alignment.topCenter,
+                      //   end: Alignment.bottomCenter,
+                      // ),
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/btn_round.png]'),
+                        fit: BoxFit.fill,
                       ),
+                      shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: Text(

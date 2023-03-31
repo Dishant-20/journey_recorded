@@ -220,7 +220,9 @@ class _TaskScreenState extends State<TaskScreen> {
                       children: <Widget>[
                         InkWell(
                           onTap: () {
-                            print('object');
+                            if (kDebugMode) {
+                              print('object');
+                            }
                           },
                           child: Container(
                             margin: const EdgeInsets.only(
@@ -347,7 +349,9 @@ class _TaskScreenState extends State<TaskScreen> {
           for (int i = 0; i < arr_task_list.length; i++) ...[
             InkWell(
               onTap: () {
-                print('fd 2');
+                if (kDebugMode) {
+                  print('fd 2');
+                }
 
                 func_push_to_task(
                   context,
@@ -371,7 +375,9 @@ class _TaskScreenState extends State<TaskScreen> {
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-                        print('object');
+                        if (kDebugMode) {
+                          print('object');
+                        }
                       },
                       child: Container(
                         margin: const EdgeInsets.only(
@@ -502,57 +508,61 @@ class _TaskScreenState extends State<TaskScreen> {
           Container(
             height: 60,
             width: MediaQuery.of(context).size.width,
-            color: Colors.black,
-            child: Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    func_get_task_list_WB();
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      left: 20.0,
-                    ),
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(
-                        14.0,
-                      ),
-                    ),
-                    child: Align(
-                      child: Text(
-                        'All',
-                        style: TextStyle(
-                          fontFamily: font_style_name,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
+            // color: Colors.green,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(
+                    54,
+                    30,
+                    107,
+                    1,
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    open_category_list(context);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      left: 20.0,
-                    ),
-                    height: 40,
-                    // width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(
-                        14.0,
+                  Color.fromRGBO(
+                    92,
+                    21,
+                    93,
+                    1,
+                  ),
+                  Color.fromRGBO(
+                    138,
+                    0,
+                    70,
+                    1,
+                  ),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      func_get_task_list_WB();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 20.0,
                       ),
-                    ),
-                    child: Align(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      height: 50,
+                      width: 90,
+                      decoration: BoxDecoration(
+                        // color: Colors.amber,
+                        borderRadius: BorderRadius.circular(
+                          14.0,
+                        ),
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/btn_round.png'),
+                          fit: BoxFit.fill,
+                        ),
+                        // shape: BoxShape.circle,
+                      ),
+                      child: Align(
                         child: Text(
-                          'Category',
+                          'All',
                           style: TextStyle(
                             fontFamily: font_style_name,
                             fontSize: 16.0,
@@ -561,19 +571,83 @@ class _TaskScreenState extends State<TaskScreen> {
                       ),
                     ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    open_action_list(context);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      left: 20.0,
+                  InkWell(
+                    onTap: () {
+                      open_category_list(context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 0.0,
+                      ),
+                      height: 50,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/btn_round.png'),
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          14.0,
+                        ),
+                      ),
+                      child: Align(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Category',
+                            style: TextStyle(
+                              fontFamily: font_style_name,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    height: 40,
-                    // width: 40,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      open_action_list(context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 0.0,
+                      ),
+                      height: 50,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/btn_round.png'),
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          14.0,
+                        ),
+                      ),
+                      child: Align(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Actions',
+                            style: TextStyle(
+                              fontFamily: font_style_name,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      left: 0.0,
+                    ),
+                    height: 50,
+                    width: 120,
                     decoration: BoxDecoration(
-                      color: Colors.amber,
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/btn_round.png'),
+                        fit: BoxFit.fill,
+                      ),
                       borderRadius: BorderRadius.circular(
                         14.0,
                       ),
@@ -582,7 +656,7 @@ class _TaskScreenState extends State<TaskScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Actions',
+                          'Filter',
                           style: TextStyle(
                             fontFamily: font_style_name,
                             fontSize: 16.0,
@@ -591,33 +665,8 @@ class _TaskScreenState extends State<TaskScreen> {
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    left: 20.0,
-                  ),
-                  height: 40,
-                  // width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(
-                      14.0,
-                    ),
-                  ),
-                  child: Align(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Filter',
-                        style: TextStyle(
-                          fontFamily: font_style_name,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Text(

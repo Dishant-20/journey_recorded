@@ -4,12 +4,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
-import 'package:journey_recorded/custom_files/drawer.dart';
+// import 'package:journey_recorded/custom_files/drawer.dart';
 import 'package:journey_recorded/goals/add_goals/add_goals.dart';
-import 'package:journey_recorded/goals/goals_details/goals_details.dart';
-import 'package:journey_recorded/quotes/add_quotes/add_quotes.dart';
+// import 'package:journey_recorded/goals/goals_details/goals_details.dart';
+// import 'package:journey_recorded/quotes/add_quotes/add_quotes.dart';
 import 'package:journey_recorded/real_main_details/real_main_details.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,7 +75,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
     ];
 
     // arr_filter_search_data.add(custom_filter_data);
-    print(arr_filter_search_data);
+    if (kDebugMode) {
+      print(arr_filter_search_data);
+    }
 //
 
     get_goals_list_WB();
@@ -82,7 +85,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
 // get cart
   get_goals_list_WB() async {
-    print('=====> POST : GOAL LIST');
+    if (kDebugMode) {
+      print('=====> POST : GOAL LIST');
+    }
 
     setState(() {
       str_goal_loader = '0';
@@ -108,7 +113,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {
@@ -120,13 +127,17 @@ class _GoalsScreenState extends State<GoalsScreen> {
         }
         get_category_list_WB();
       } else {
-        print(
-          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
-        );
+        if (kDebugMode) {
+          print(
+            '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+          );
+        }
       }
     } else {
       // return postList;
-      print('something went wrong');
+      if (kDebugMode) {
+        print('something went wrong');
+      }
     }
   }
 
@@ -816,7 +827,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
         // ),
         InkWell(
           onTap: () {
-            print('click on add goals');
+            if (kDebugMode) {
+              print('click on add goals');
+            }
             _navigateAndDisplaySelection(context);
             // Navigator.push(
             //   context,
@@ -1415,7 +1428,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
     // convert data to dict
     var get_data = jsonDecode(resposne.body);
-    print(get_data);
+    if (kDebugMode) {
+      print(get_data);
+    }
 
     if (resposne.statusCode == 200) {
       if (get_data['status'].toString().toLowerCase() == 'success') {

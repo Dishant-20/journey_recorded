@@ -1,9 +1,12 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
+import 'package:journey_recorded/grind/create_grind/create_grind.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -133,6 +136,13 @@ class _GrindScreenState extends State<GrindScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // func_push_from_floating_button();
+        },
+        backgroundColor: navigation_color,
+        child: const Icon(Icons.add),
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -140,16 +150,56 @@ class _GrindScreenState extends State<GrindScreen> {
             Container(
               height: 160,
               width: MediaQuery.of(context).size.width,
-              color: Colors.amber,
+              // color: Colors.amber,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(
+                      54,
+                      30,
+                      107,
+                      1,
+                    ),
+                    Color.fromRGBO(
+                      92,
+                      21,
+                      93,
+                      1,
+                    ),
+                    Color.fromRGBO(
+                      138,
+                      0,
+                      70,
+                      1,
+                    ),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
               child: Row(
                 children: <Widget>[
                   Container(
                     margin: const EdgeInsets.only(
                       left: 20.0,
                     ),
-                    height: 120,
+                    height: 140,
                     width: 120,
-                    color: Colors.deepPurple,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 4,
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage(
+                          'assets/images/task_bg.png',
+                        ),
+                        fit: BoxFit.fill,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        14.0,
+                      ),
+                    ),
                   ),
                   Expanded(
                     child: Container(
@@ -157,7 +207,7 @@ class _GrindScreenState extends State<GrindScreen> {
                         left: 20.0,
                         right: 20.0,
                       ),
-                      height: 120,
+                      height: 140,
                       width: 120,
                       color: const Color.fromRGBO(
                         240,
@@ -272,7 +322,53 @@ class _GrindScreenState extends State<GrindScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'Mostrecent',
+                                        'Positive',
+                                        style: TextStyle(
+                                          fontFamily: font_style_name,
+                                          fontSize: 16.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        '',
+                                        style: TextStyle(
+                                          fontFamily: font_style_name,
+                                          fontSize: 16.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Most Recent',
                                         style: TextStyle(
                                           fontFamily: font_style_name,
                                           fontSize: 16.0,
@@ -357,5 +453,28 @@ class _GrindScreenState extends State<GrindScreen> {
         ),
       ),
     );
+  }
+
+  //
+  Future<void> pushToAddGrind(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateGrindScreen(
+            // str_goal_id: widget.str_get_goal_id.toString(),
+            ),
+      ),
+    );
+
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
+
+// back_after_add_sub_goal
+
+    if (!mounted) return;
+
+    // if (result)
+    setState(() {});
   }
 }
