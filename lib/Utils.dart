@@ -3,6 +3,7 @@
 // import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // base URL
 var application_base_url =
@@ -54,6 +55,57 @@ var navigation_title_habits_info = 'Habits Info';
 var navigation_title_create_new_habit = 'Create new habit';
 var navigation_title_skills = 'Skills';
 var navigation_title_add_sub_goal = 'Add Sub goal';
+var navigation_title_create_grind = 'Create Grind'.toUpperCase();
+
+/* ================================================================ */
+
+// text with regular
+Text text_with_regular_style(str) {
+  return Text(
+    str.toString(),
+    style: GoogleFonts.montserrat(
+      fontSize: 16.0,
+    ),
+  );
+}
+
+// text with bold
+Text text_with_bold_style(str) {
+  return Text(
+    str.toString(),
+    style: GoogleFonts.montserrat(
+      fontSize: 18.0,
+      fontWeight: FontWeight.w700,
+      color: Colors.white,
+    ),
+  );
+}
+
+// text with bold
+Text text_with_bold_style_black(str) {
+  return Text(
+    str.toString(),
+    style: GoogleFonts.montserrat(
+      fontSize: 18.0,
+      fontWeight: FontWeight.w700,
+      color: Colors.black,
+    ),
+  );
+}
+
+// text with semi bold
+Text text_with_semi_bold_style_black(str) {
+  return Text(
+    str.toString(),
+    style: GoogleFonts.montserrat(
+      fontSize: 18.0,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+    ),
+  );
+}
+
+/* ================================================================ */
 
 /*
 MaterialApp(

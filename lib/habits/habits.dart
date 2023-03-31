@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -33,7 +34,9 @@ class _HabitsScreenState extends State<HabitsScreen> {
 
   // get cart
   get_habits_list_WB() async {
-    print('=====> POST : HABIT LIST');
+    if (kDebugMode) {
+      print('=====> POST : HABIT LIST');
+    }
 
     str_loader_habit = '0';
     setState(() {});

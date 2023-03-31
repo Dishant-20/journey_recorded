@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/grind/create_grind/create_grind.dart';
+import 'package:journey_recorded/grind/grind_details/grind_details.dart';
 import 'package:journey_recorded/single_classes/custom_loader/custom_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -138,7 +139,9 @@ class _GrindScreenState extends State<GrindScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // func_push_from_floating_button();
+          //
+          pushToCreateGrind(context);
+          //
         },
         backgroundColor: navigation_color,
         child: const Icon(Icons.add),
@@ -224,8 +227,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -244,8 +247,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -270,8 +273,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -290,8 +293,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -316,54 +319,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Positive',
-                                        style: TextStyle(
-                                          fontFamily: font_style_name,
-                                          fontSize: 16.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        '',
-                                        style: TextStyle(
-                                          fontFamily: font_style_name,
-                                          fontSize: 16.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -382,8 +339,8 @@ class _GrindScreenState extends State<GrindScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
                                     ),
                                     child: Center(
@@ -434,11 +391,86 @@ class _GrindScreenState extends State<GrindScreen> {
               //
             ] else ...[
               //
+              Container(
+                color: Colors.amber,
+                // width: MediaQuery.of(context).size.width,
+                height: 60.0,
+              ),
               for (int i = 0; i < arrGrindList.length; i++) ...[
-                Container(
-                  color: Colors.pink,
-                  width: MediaQuery.of(context).size.width,
-                  height: 60.0,
+                InkWell(
+                  onTap: () {
+                    if (kDebugMode) {
+                      print('asas');
+                    }
+                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const GrindDetailsScreen(
+                            // str_goal_id: widget.str_get_goal_id.toString(),
+                            ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(20),
+                        color: Colors.transparent,
+                        // width: MediaQuery.of(context).size.width,
+                        // height: 60.0,
+                        child: text_with_semi_bold_style_black(
+                          //
+                          arrGrindList[i]['grindName'].toString(),
+                          //
+                        ),
+                      ),
+                      //
+                      Container(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.transparent,
+                        width: 120,
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (kDebugMode) {
+                                  print('object1');
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.watch_later_rounded,
+                                color: Colors.pink,
+                                size: 30,
+                              ),
+                            ),
+                            //
+                            IconButton(
+                              onPressed: () {
+                                if (kDebugMode) {
+                                  print('object1');
+                                }
+                                //
+                                deleteGrindPopUp(
+                                  arrGrindList[i]['grindName'].toString(),
+                                  arrGrindList[i]['grindId'].toString(),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.delete_forever,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      //
+                    ],
+                  ),
                 ),
                 Container(
                   color: Colors.grey,
@@ -456,7 +488,7 @@ class _GrindScreenState extends State<GrindScreen> {
   }
 
   //
-  Future<void> pushToAddGrind(BuildContext context) async {
+  Future<void> pushToCreateGrind(BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -470,11 +502,121 @@ class _GrindScreenState extends State<GrindScreen> {
       print('result =====> ' + result);
     }
 
-// back_after_add_sub_goal
-
     if (!mounted) return;
 
-    // if (result)
-    setState(() {});
+    if (result == 'back_from_create_grind') {
+      setState(() {
+        strGrindLoader = '0';
+        getGrindWB();
+      });
+    } else {}
+  }
+
+  //
+  // ALERT
+  Future<void> deleteGrindPopUp(strGrindName, strGrindId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: text_with_bold_style_black(
+            'Delete',
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Container(
+                  // height: 100,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.transparent,
+                  child: text_with_regular_style(
+                    'Are you sure you want to delete "' + strGrindName + '" ?',
+                  ),
+                ),
+              ],
+              //
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Dismiss',
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'Yes, delete',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                //
+                deleteGrindWB(
+                  strGrindId,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // delete grind
+  deleteGrindWB(getGrindId) async {
+    if (kDebugMode) {
+      print('=====> POST : MISSION LIST');
+    }
+
+    setState(() {
+      strGrindLoader = '0';
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final resposne = await http.post(
+      Uri.parse(
+        application_base_url,
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'action': 'girnddelete',
+          'userId': prefs.getInt('userId').toString(),
+          'grindId': getGrindId.toString(),
+        },
+      ),
+    );
+
+    // convert data to dict
+    var getData = jsonDecode(resposne.body);
+    if (kDebugMode) {
+      print(getData);
+    }
+
+    if (resposne.statusCode == 200) {
+      if (getData['status'].toString().toLowerCase() == 'success') {
+        //
+        getGrindWB();
+        //
+      } else {
+        print(
+          '====> SOMETHING WENT WRONG IN "addcart" WEBSERVICE. PLEASE CONTACT ADMIN',
+        );
+      }
+    } else {
+      // return postList;
+      if (kDebugMode) {
+        print('something went wrong');
+      }
+    }
   }
 }

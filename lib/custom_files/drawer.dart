@@ -5,7 +5,7 @@ import 'package:journey_recorded/Utils.dart';
 import 'package:journey_recorded/dashboard/dashboard.dart';
 import 'package:journey_recorded/edit_profile/edit_profile.dart';
 import 'package:journey_recorded/login/login.dart';
-import 'package:journey_recorded/splash/splash_screen.dart';
+// import 'package:journey_recorded/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class navigationDrawer extends StatefulWidget {
