@@ -392,9 +392,69 @@ class _GrindScreenState extends State<GrindScreen> {
             ] else ...[
               //
               Container(
-                color: Colors.amber,
                 // width: MediaQuery.of(context).size.width,
                 height: 60.0,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(
+                    246,
+                    200,
+                    68,
+                    1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xffDDDDDD),
+                      blurRadius: 6.0,
+                      spreadRadius: 2.0,
+                      offset: Offset(0.0, 0.0),
+                    )
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      color: Colors.transparent,
+                      // width: MediaQuery.of(context).size.width,
+                      // height: 60.0,
+                      child: text_with_bold_style_black(
+                        //
+                        'Grind',
+                        //
+                      ),
+                    ),
+                    //
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      color: Colors.transparent,
+                      width: 120,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (kDebugMode) {
+                                print('object1');
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.check_box,
+                              color: Colors.pink,
+                              size: 30,
+                            ),
+                          ),
+                          //
+                          text_with_regular_style(
+                            'Expect',
+                          )
+                        ],
+                      ),
+                    ),
+                    //
+                  ],
+                ),
               ),
               for (int i = 0; i < arrGrindList.length; i++) ...[
                 InkWell(
@@ -403,14 +463,8 @@ class _GrindScreenState extends State<GrindScreen> {
                       print('asas');
                     }
                     //
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const GrindDetailsScreen(
-                            // str_goal_id: widget.str_get_goal_id.toString(),
-                            ),
-                      ),
-                    );
+                    grindDetails(context, i);
+                    //
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -472,13 +526,13 @@ class _GrindScreenState extends State<GrindScreen> {
                     ],
                   ),
                 ),
+                //
                 Container(
                   color: Colors.grey,
                   width: MediaQuery.of(context).size.width,
                   height: 1.0,
                 ),
               ]
-
               //
             ],
           ],
@@ -502,14 +556,49 @@ class _GrindScreenState extends State<GrindScreen> {
       print('result =====> ' + result);
     }
 
+    print('hello 1');
     if (!mounted) return;
-
+    print('hello 2');
     if (result == 'back_from_create_grind') {
       setState(() {
         strGrindLoader = '0';
         getGrindWB();
       });
-    } else {}
+    } else {
+      //
+
+      //
+    }
+  }
+
+  //
+  Future<void> grindDetails(BuildContext context, i) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GrindDetailsScreen(
+          dictShowFullData: arrGrindList[i],
+        ),
+      ),
+    );
+
+    if (kDebugMode) {
+      print('result =====> ' + result);
+    }
+
+    print('hello 1');
+    if (!mounted) return;
+    print('hello 2');
+    if (result == 'back_from_create_grind') {
+      setState(() {
+        strGrindLoader = '0';
+        getGrindWB();
+      });
+    } else {
+      //
+
+      //
+    }
   }
 
   //
@@ -619,4 +708,5 @@ class _GrindScreenState extends State<GrindScreen> {
       }
     }
   }
+  //
 }
